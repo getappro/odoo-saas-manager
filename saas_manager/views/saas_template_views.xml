@@ -22,7 +22,12 @@
                                 type="object" 
                                 string="Access Template"
                                 invisible="not is_template_ready"/>
-                        <button name="action_view_instances" 
+                        <button name="action_sso_login_template"
+                                type="object"
+                                string="SSO Template"
+                                class="oe_highlight"
+                                invisible="not is_template_ready"/>
+                        <button name="action_view_instances"
                                 type="object" 
                                 string="View Instances"
                                 invisible="instance_count == 0"/>

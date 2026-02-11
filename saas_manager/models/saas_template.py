@@ -11,6 +11,9 @@ PostgreSQL master database serving as a template for cloning.
 import logging
 import json
 import requests
+import secrets
+import time
+import jwt
 from odoo import api, fields, models, _, tools
 from odoo.exceptions import UserError, ValidationError
 from odoo.tools import config
@@ -87,6 +90,15 @@ class SaaSTemplate(models.Model):
         required=True,
         default='admin',
         help="Admin password for this template database"
+    )
+    agent_secret = fields.Char(
+        string='Agent Secret',
+        help="Shared secret with saas_agent for JWT signatures"
+    )
+    agent_impersonate_login = fields.Char(
+        string='SSO Login',
+        default='admin',
+        help="Login utilisé pour l'impersonation SSO vers la base template"
     )
     module_ids = fields.Many2many(
         'ir.module.module',
@@ -349,6 +361,151 @@ class SaaSTemplate(models.Model):
                 _("Error installing modules via RPC.\n\nError: %s") % str(e)
             )
 
+    def _ensure_agent_secret(self):
+        self.ensure_one()
+        if not self.agent_secret:
+            self.agent_secret = secrets.token_urlsafe(32)
+        return self.agent_secret
+
+    def _build_template_url(self):
+        self.ensure_one()
+        base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url') or ''
+        if not base_url:
+            return None
+        from urllib.parse import urlparse, urlunparse
+        parsed_base = urlparse(base_url.rstrip('/'))
+        hostname_parts = (parsed_base.hostname or '').split('.')
+        if len(hostname_parts) >= 2:
+            domain = '.'.join(hostname_parts[-2:])
+        else:
+            domain = parsed_base.hostname or ''
+        template_hostname = f"{self.template_db}.{domain}" if domain else self.template_db
+        if parsed_base.port:
+            netloc = f"{template_hostname}:{parsed_base.port}"
+        else:
+            netloc = template_hostname
+        return urlunparse((parsed_base.scheme, netloc, '', '', '', '')).rstrip('/')
+
+    def _push_agent_secret_to_template(self):
+        self.ensure_one()
+        base_url = self._build_template_url()
+        if not base_url:
+            _logger.warning("No base URL to push agent secret for template %s", self.name)
+            return False
+        rpc_url = f"{base_url}/jsonrpc"
+        secret = self._ensure_agent_secret()
+        try:
+            login_payload = {
+                'jsonrpc': '2.0',
+                'method': 'call',
+                'params': {
+                    'service': 'common',
+                    'method': 'login',
+                    'args': [self.template_db, self.template_admin_login or 'admin', self.template_admin_password],
+                },
+                'id': 1,
+            }
+            login_resp = requests.post(rpc_url, json=login_payload, timeout=30, verify=False)
+            login_resp.raise_for_status()
+            uid = login_resp.json().get('result')
+            if not uid:
+                _logger.warning("RPC login failed on template %s when pushing agent secret", self.name)
+                return False
+
+            params_payload = {
+                'jsonrpc': '2.0',
+                'method': 'call',
+                'params': {
+                    'service': 'object',
+                    'method': 'execute_kw',
+                    'args': [
+                        self.template_db,
+                        uid,
+                        self.template_admin_password,
+                        'ir.config_parameter',
+                        'set_param',
+                        ['saas_agent.secret', secret],
+                    ],
+                },
+                'id': 2,
+            }
+            requests.post(rpc_url, json=params_payload, timeout=30, verify=False).raise_for_status()
+
+            uuid_payload = params_payload.copy()
+            uuid_payload['params']['args'][-1] = ['saas_agent.instance_uuid', self.template_db]
+            uuid_payload['id'] = 3
+            requests.post(rpc_url, json=uuid_payload, timeout=30, verify=False).raise_for_status()
+
+            _logger.info("Agent secret synced to template %s", self.name)
+            return True
+        except Exception as exc:
+            _logger.warning("Failed to push agent secret to template %s: %s", self.name, exc)
+            return False
+
+    def _build_agent_jwt(self, action, extra=None, ttl=300):
+        self.ensure_one()
+        secret = self._ensure_agent_secret()
+        now = int(time.time())
+        payload = {
+            'action': action,
+            'db': self.template_db,
+            'instance_uuid': self.template_db,
+            'iat': now,
+            'exp': now + ttl,
+        }
+        if extra:
+            payload.update(extra)
+        return jwt.encode(payload, secret, algorithm='HS256')
+
+    def _call_agent(self, endpoint, token, timeout=15):
+        base_url = self._build_template_url()
+        if not base_url:
+            raise UserError(_('Template has no base URL configured.'))
+        url = f"{base_url}{endpoint}"
+        headers = {'Authorization': f'Bearer {token}'}
+        return requests.post(url, json={'token': token}, headers=headers, timeout=timeout, verify=False)
+
+    def _parse_agent_response(self, response):
+        data = response.json()
+        if isinstance(data, dict) and 'result' in data:
+            payload = data.get('result') or {}
+        else:
+            payload = data
+        if not isinstance(payload, dict):
+            return {'success': False, 'error': _('Invalid agent response')}
+        return payload
+
+    def action_sso_login_template(self):
+        self.ensure_one()
+        if not self.is_template_ready:
+            raise UserError(_('Template must be ready to access it.'))
+
+        if not self._push_agent_secret_to_template():
+            raise UserError(_('Cannot sync agent secret with template.'))
+
+        user_login = self.agent_impersonate_login or self.template_admin_login or 'admin'
+        token = self._build_agent_jwt('sso', {
+            'user_login': user_login,
+            'redirect': '/web',
+        })
+
+        try:
+            response = self._call_agent('/saas/sso/request', token)
+            response.raise_for_status()
+            payload = self._parse_agent_response(response)
+            if payload.get('success') and payload.get('login_url'):
+                return {
+                    'type': 'ir.actions.act_url',
+                    'url': payload['login_url'],
+                    'target': 'new',
+                }
+            error_msg = payload.get('error') or _('SSO request failed.')
+            _logger.warning("SSO request error for template %s: %s", self.name, error_msg)
+            raise UserError(error_msg)
+        except Exception as exc:
+            _logger.warning("SSO login failed for template %s: %s", self.name, exc)
+            return self.action_access_template_db()
+
     def action_create_template_db(self):
         """
         Créer la base de données template PostgreSQL et l'initialiser via RPC.
@@ -395,7 +552,7 @@ class SaaSTemplate(models.Model):
             )
 
             # Step 2: Install base modules via RPC
-            modules_to_install = ['base', 'web', 'mail', 'portal']
+            modules_to_install = ['base', 'web', 'mail', 'portal', 'saas_agent']
             self._install_modules_via_rpc(
                 base_url,
                 template_db_name,
