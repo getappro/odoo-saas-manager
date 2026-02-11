@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="saas_instance_form_inherit_backup" model="ir.ui.view">
+            <field name="name">saas.instance.form.backup.aws</field>
+            <field name="model">saas.instance</field>
+            <field name="inherit_id" ref="saas_manager.view_saas_instance_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//header" position="inside">
+                    <button name="action_backup_now"
+                            type="object"
+                            string="Backup S3"
+                            class="oe_highlight"
+                            modifiers="{'invisible': ['|', ('state', 'not in', ['active', 'suspended']), ('domain', '=', False)]}"/>
+                </xpath>
+                <xpath expr="//sheet//div[@class='oe_button_box']" position="inside">
+                    <button class="oe_stat_button" name="action_open_backups" type="object" icon="fa-cloud-download">
+                        <field name="backup_count" widget="statinfo" string="Backups"/>
+                    </button>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>
+

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_res_config_settings_saas_backup" model="ir.ui.view">
+            <field name="name">res.config.settings.saas.backup.aws</field>
+            <field name="model">res.config.settings</field>
+            <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//form" position="inside">
+                    <app data-string="SaaS" string="SaaS" name="saas">
+                        <block title="AWS S3 Backups" name="saas_backup_aws_block">
+                            <setting>
+                                <div class="content-group">
+                                    <div class="row mt8">
+                                        <label class="col-lg-3" string="Access Key" for="s3_access_key_id"/>
+                                        <field name="s3_access_key_id" password="True"/>
+                                    </div>
+                                    <div class="row mt8">
+                                        <label class="col-lg-3" string="Secret Key" for="s3_secret_access_key"/>
+                                        <field name="s3_secret_access_key" password="True"/>
+                                    </div>
+                                    <div class="row mt8">
+                                        <label class="col-lg-3" string="Region" for="s3_region_name"/>
+                                        <field name="s3_region_name"/>
+                                    </div>
+                                    <div class="row mt8">
+                                        <label class="col-lg-3" string="Bucket" for="s3_bucket_name"/>
+                                        <field name="s3_bucket_name"/>
+                                    </div>
+                                    <div class="row mt8">
+                                        <label class="col-lg-3" string="Prefix" for="s3_prefix"/>
+                                        <field name="s3_prefix"/>
+                                    </div>
+                                </div>
+                            </setting>
+                            <setting>
+                                <div class="content-group">
+                                    <div class="row mt8">
+                                        <label class="col-lg-3" string="Retention" for="backup_retention"/>
+                                        <field name="backup_retention"/>
+                                    </div>
+                                    <div class="row mt8">
+                                        <label class="col-lg-3" string="Automatic Backups" for="auto_backup_enabled"/>
+                                        <field name="auto_backup_enabled"/>
+                                    </div>
+                                    <div class="row mt8" invisible="not auto_backup_enabled">
+                                        <label class="col-lg-3" string="Interval (hours)" for="auto_backup_interval_hours"/>
+                                        <field name="auto_backup_interval_hours"/>
+                                    </div>
+                                    <div class="mt8">
+                                        <button type="object" name="action_test_s3_connection" string="Test S3" class="btn btn-primary"/>
+                                    </div>
+                                </div>
+                            </setting>
+                        </block>
+                    </app>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>
+

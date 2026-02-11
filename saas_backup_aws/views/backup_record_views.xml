@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_saas_backup_record_tree" model="ir.ui.view">
+            <field name="name">saas.backup.record.tree</field>
+            <field name="model">saas.backup.record</field>
+            <field name="arch" type="xml">
+                <list string="Backups" sample="1">
+                    <field name="create_date"/>
+                    <field name="name"/>
+                    <field name="instance_id"/>
+                    <field name="backup_type"/>
+                    <field name="state" widget="badge"
+                           decoration-success="state == 'done'"
+                           decoration-danger="state == 'failed'"
+                           decoration-info="state == 'running'"/>
+                    <field name="size_bytes"/>
+                    <field name="s3_bucket"/>
+                    <field name="s3_key" optional="hide"/>
+                    <field name="done_at"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="view_saas_backup_record_form" model="ir.ui.view">
+            <field name="name">saas.backup.record.form</field>
+            <field name="model">saas.backup.record</field>
+            <field name="arch" type="xml">
+                <form string="Backup">
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                            <field name="instance_id"/>
+                            <field name="backup_type"/>
+                            <field name="state" widget="statusbar" statusbar_visible="pending,running,done,failed"/>
+                        </group>
+                        <group>
+                            <field name="s3_bucket"/>
+                            <field name="s3_key"/>
+                            <field name="s3_region"/>
+                            <field name="url"/>
+                            <field name="size_bytes"/>
+                        </group>
+                        <group>
+                            <field name="requested_by"/>
+                            <field name="started_at"/>
+                            <field name="done_at"/>
+                            <field name="duration_seconds"/>
+                        </group>
+                        <group>
+                            <field name="message" widget="text"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_saas_backup_record" model="ir.actions.act_window">
+            <field name="name">Backups</field>
+            <field name="res_model">saas.backup.record</field>
+            <field name="view_mode">list,form</field>
+        </record>
+
+        <menuitem id="menu_saas_backups"
+                  name="Backups"
+                  parent="saas_manager.menu_saas_operations"
+                  action="action_saas_backup_record"
+                  sequence="80"/>
+    </data>
+</odoo>
+

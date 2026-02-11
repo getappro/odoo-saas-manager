@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="ir_cron_saas_backup_auto" model="ir.cron">
+            <field name="name">SaaS Auto Backup</field>
+            <field name="model_id" ref="saas_backup_aws.model_saas_backup_service"/>
+            <field name="state">code</field>
+            <field name="code">model.cron_auto_backup()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">hours</field>
+            <field name="active">True</field>
+        </record>
+    </data>
+</odoo>
+
