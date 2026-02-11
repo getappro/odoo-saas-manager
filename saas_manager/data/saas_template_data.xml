@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        
+        <!-- Template 1: Blank -->
+        <record id="template_blank" model="saas.template">
+            <field name="name">Blank Template</field>
+            <field name="code">blank</field>
+            <field name="template_db">template_blank</field>
+            <field name="server_id" ref="saas_server_default"/>
+            <field name="is_template_ready" eval="False"/>
+            <field name="template_version">1.0.0</field>
+            <field name="description"><![CDATA[
+                <h3>Blank Odoo Instance</h3>
+                <ul>
+                    <li>Clean Odoo installation</li>
+                    <li>No pre-installed modules</li>
+                    <li>Base configuration only</li>
+                    <li>Ideal for custom implementations</li>
+                </ul>
+            ]]></field>
+        </record>
+
+        <!-- Template 2: Restaurant -->
+        <record id="template_restaurant" model="saas.template">
+            <field name="name">Restaurant Template</field>
+            <field name="code">restaurant</field>
+            <field name="template_db">template_restaurant</field>
+            <field name="server_id" ref="saas_server_default"/>
+            <field name="is_template_ready" eval="False"/>
+            <field name="template_version">1.0.0</field>
+            <field name="description"><![CDATA[
+                <h3>Restaurant & Point of Sale</h3>
+                <ul>
+                    <li><strong>Point of Sale</strong> - Modern POS interface</li>
+                    <li><strong>Inventory</strong> - Stock management</li>
+                    <li><strong>Purchasing</strong> - Supplier orders</li>
+                    <li><strong>Accounting</strong> - Financial management</li>
+                    <li>Pre-configured products and categories</li>
+                    <li>Demo data included</li>
+                </ul>
+            ]]></field>
+        </record>
+
+        <!-- Template 3: E-commerce -->
+        <record id="template_ecommerce" model="saas.template">
+            <field name="name">E-commerce Template</field>
+            <field name="code">ecommerce</field>
+            <field name="template_db">template_ecommerce</field>
+            <field name="server_id" ref="saas_server_default"/>
+            <field name="is_template_ready" eval="False"/>
+            <field name="template_version">1.0.0</field>
+            <field name="description"><![CDATA[
+                <h3>E-commerce & Online Store</h3>
+                <ul>
+                    <li><strong>Website</strong> - Modern website builder</li>
+                    <li><strong>E-commerce</strong> - Online shop</li>
+                    <li><strong>Sales</strong> - Order management</li>
+                    <li><strong>Inventory</strong> - Stock tracking</li>
+                    <li><strong>Payment</strong> - Payment gateway integration</li>
+                    <li>Pre-configured products and categories</li>
+                    <li>Demo website theme</li>
+                </ul>
+            ]]></field>
+        </record>
+
+        <!-- Template 4: Services -->
+        <record id="template_services" model="saas.template">
+            <field name="name">Services Template</field>
+            <field name="code">services</field>
+            <field name="template_db">template_services</field>
+            <field name="server_id" ref="saas_server_default"/>
+            <field name="is_template_ready" eval="False"/>
+            <field name="template_version">1.0.0</field>
+            <field name="description"><![CDATA[
+                <h3>Professional Services</h3>
+                <ul>
+                    <li><strong>Project</strong> - Project management</li>
+                    <li><strong>Timesheet</strong> - Time tracking</li>
+                    <li><strong>Sales</strong> - Quote and orders</li>
+                    <li><strong>Invoicing</strong> - Billing</li>
+                    <li><strong>HR</strong> - Employee management</li>
+                    <li>Pre-configured services and tasks</li>
+                    <li>Demo projects</li>
+                </ul>
+            ]]></field>
+        </record>
+
+    </data>
+</odoo>

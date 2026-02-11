@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        
+        <!-- SaaS Plan Form View -->
+        <record id="view_saas_plan_form" model="ir.ui.view">
+            <field name="name">saas.plan.form</field>
+            <field name="model">saas.plan</field>
+            <field name="arch" type="xml">
+                <form string="SaaS Plan">
+                    <header>
+                        <button name="action_view_instances" 
+                                type="object" 
+                                string="View Instances"
+                                invisible="instance_count == 0"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button class="oe_stat_button" type="object" name="action_view_instances" icon="fa-database">
+                                <field string="Instances" name="instance_count" widget="statinfo"/>
+                            </button>
+                        </div>
+                        <widget name="web_ribbon" title="Popular" bg_color="text-bg-success" invisible="not is_popular"/>
+                        <div class="oe_title">
+                            <label for="name"/>
+                            <h1><field name="name" placeholder="Plan Name"/></h1>
+                        </div>
+                        <group>
+                            <group string="Configuration">
+                                <field name="code"/>
+                                <field name="sequence"/>
+                                <field name="is_popular" widget="boolean_toggle"/>
+                                <field name="active" widget="boolean_toggle"/>
+                            </group>
+                            <group string="Limits">
+                                <field name="user_limit"/>
+                                <field name="storage_limit" widget="float"/>
+                                <field name="trial_days"/>
+                            </group>
+                        </group>
+                        <group>
+                            <group string="Pricing">
+                                <field name="price_monthly" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                                <field name="price_yearly" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                            </group>
+                            <group>
+                                <field name="color" widget="color_picker"/>
+                            </group>
+                        </group>
+                        <group>
+                            <field name="description" placeholder="Short description..."/>
+                        </group>
+                        <notebook>
+                            <page string="Features">
+                                <field name="features" widget="html"/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <chatter/>
+                </form>
+            </field>
+        </record>
+
+        <!-- SaaS Plan List View (Odoo 18 - using <list>) -->
+        <record id="view_saas_plan_list" model="ir.ui.view">
+            <field name="name">saas.plan.list</field>
+            <field name="model">saas.plan</field>
+            <field name="arch" type="xml">
+                <list string="SaaS Plans" sample="1">
+                    <field name="sequence" widget="handle"/>
+                    <field name="name"/>
+                    <field name="code"/>
+                    <field name="user_limit"/>
+                    <field name="storage_limit"/>
+                    <field name="price_monthly" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                    <field name="price_yearly" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                    <field name="trial_days"/>
+                    <field name="is_popular" widget="badge"
+                           decoration-success="is_popular == True"/>
+                    <field name="instance_count"/>
+                    <field name="active" widget="boolean_toggle" optional="hide"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- SaaS Plan Kanban View -->
+        <record id="view_saas_plan_kanban" model="ir.ui.view">
+            <field name="name">saas.plan.kanban</field>
+            <field name="model">saas.plan</field>
+            <field name="arch" type="xml">
+                <kanban string="SaaS Plans" sample="1" class="o_kanban_mobile">
+                    <field name="id"/>
+                    <field name="name"/>
+                    <field name="code"/>
+                    <field name="is_popular"/>
+                    <field name="user_limit"/>
+                    <field name="storage_limit"/>
+                    <field name="price_monthly"/>
+                    <field name="price_yearly"/>
+                    <field name="color"/>
+                    <templates>
+                        <t t-name="card">
+                            <div class="oe_kanban_global_click" t-attf-style="border-left: 5px solid {{ kanban_color(record.color.raw_value) }}">
+                                <div class="o_kanban_record_top">
+                                    <div class="o_kanban_record_headings">
+                                        <strong class="o_kanban_record_title">
+                                            <field name="name"/>
+                                        </strong>
+                                    </div>
+                                    <span class="badge badge-pill" t-if="record.is_popular.raw_value" 
+                                          t-attf-class="badge-success">Popular</span>
+                                </div>
+                                <div class="o_kanban_record_body">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <strong>Users:</strong> <field name="user_limit"/>
+                                        </div>
+                                        <div class="col-6">
+                                            <strong>Storage:</strong> <field name="storage_limit"/> GB
+                                        </div>
+                                    </div>
+                                    <div class="row mt-2">
+                                        <div class="col-12">
+                                            <strong class="text-primary">
+                                                <field name="price_monthly" widget="monetary"/> /month
+                                            </strong>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <!-- SaaS Plan Search View -->
+        <record id="view_saas_plan_search" model="ir.ui.view">
+            <field name="name">saas.plan.search</field>
+            <field name="model">saas.plan</field>
+            <field name="arch" type="xml">
+                <search string="SaaS Plans">
+                    <field name="name"/>
+                    <field name="code"/>
+                    <filter string="Popular" name="popular" domain="[('is_popular', '=', True)]"/>
+                    <separator/>
+                    <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
+                    <group expand="0" string="Group By">
+                        <filter string="Popular" name="group_popular" context="{'group_by': 'is_popular'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- SaaS Plan Action -->
+        <record id="action_saas_plan" model="ir.actions.act_window">
+            <field name="name">Plans</field>
+            <field name="res_model">saas.plan</field>
+            <field name="view_mode">kanban,list,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create your first SaaS Plan
+                </p>
+                <p>
+                    Plans define subscription tiers with user limits, storage, and pricing.
+                </p>
+            </field>
+        </record>
+
+    </data>
+</odoo>

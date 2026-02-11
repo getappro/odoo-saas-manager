@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        
+        <!-- SaaS Manager Categories -->
+        <record id="module_category_saas_manager" model="ir.module.category">
+            <field name="name">SaaS Manager</field>
+            <field name="description">Manage SaaS instances and subscriptions</field>
+            <field name="sequence">10</field>
+        </record>
+
+        <!-- SaaS Manager User -->
+        <record id="group_saas_user" model="res.groups">
+            <field name="name">User</field>
+            <field name="category_id" ref="module_category_saas_manager"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+            <field name="comment">Read-only access to instances. Cannot create or modify.</field>
+        </record>
+
+        <!-- SaaS Manager Manager -->
+        <record id="group_saas_manager" model="res.groups">
+            <field name="name">Manager</field>
+            <field name="category_id" ref="module_category_saas_manager"/>
+            <field name="implied_ids" eval="[(4, ref('group_saas_user'))]"/>
+            <field name="comment">CRUD access to instances and subscriptions. No access to templates/plans configuration.</field>
+        </record>
+
+        <!-- SaaS Manager Administrator -->
+        <record id="group_saas_admin" model="res.groups">
+            <field name="name">Administrator</field>
+            <field name="category_id" ref="module_category_saas_manager"/>
+            <field name="implied_ids" eval="[(4, ref('group_saas_manager'))]"/>
+            <field name="comment">Full access including templates, plans, and system configuration.</field>
+        </record>
+
+        <!-- Record Rules for SaaS Server -->
+        <record id="saas_server_rule_manager_all" model="ir.rule">
+            <field name="name">SaaS Server - Manager can manage all servers</field>
+            <field name="model_id" ref="model_saas_server"/>
+            <field name="groups" eval="[(4, ref('group_saas_manager'))]"/>
+            <field name="perm_read">1</field>
+            <field name="perm_create">1</field>
+            <field name="perm_write">1</field>
+            <field name="perm_unlink">0</field>
+            <field name="domain_force">[(1, '=', 1)]</field>
+        </record>
+
+        <record id="saas_server_rule_user_read" model="ir.rule">
+            <field name="name">SaaS Server - User can read servers</field>
+            <field name="model_id" ref="model_saas_server"/>
+            <field name="groups" eval="[(4, ref('group_saas_user'))]"/>
+            <field name="perm_read">1</field>
+            <field name="perm_create">0</field>
+            <field name="perm_write">0</field>
+            <field name="perm_unlink">0</field>
+            <field name="domain_force">[(1, '=', 1)]</field>
+        </record>
+
+        <!-- Record Rules for SaaS Template -->
+        <record id="saas_template_rule_manager_all" model="ir.rule">
+            <field name="name">SaaS Template - Manager can manage all templates</field>
+            <field name="model_id" ref="model_saas_template"/>
+            <field name="groups" eval="[(4, ref('group_saas_manager'))]"/>
+            <field name="perm_read">1</field>
+            <field name="perm_create">1</field>
+            <field name="perm_write">1</field>
+            <field name="perm_unlink">0</field>
+            <field name="domain_force">[(1, '=', 1)]</field>
+        </record>
+
+        <record id="saas_template_rule_user_read" model="ir.rule">
+            <field name="name">SaaS Template - User can read templates</field>
+            <field name="model_id" ref="model_saas_template"/>
+            <field name="groups" eval="[(4, ref('group_saas_user'))]"/>
+            <field name="perm_read">1</field>
+            <field name="perm_create">0</field>
+            <field name="perm_write">0</field>
+            <field name="perm_unlink">0</field>
+            <field name="domain_force">[(1, '=', 1)]</field>
+        </record>
+
+        <!-- Record Rules for SaaS Plan -->
+        <record id="saas_plan_rule_manager_all" model="ir.rule">
+            <field name="name">SaaS Plan - Manager can manage all plans</field>
+            <field name="model_id" ref="model_saas_plan"/>
+            <field name="groups" eval="[(4, ref('group_saas_manager'))]"/>
+            <field name="perm_read">1</field>
+            <field name="perm_create">1</field>
+            <field name="perm_write">1</field>
+            <field name="perm_unlink">0</field>
+            <field name="domain_force">[(1, '=', 1)]</field>
+        </record>
+
+        <record id="saas_plan_rule_user_read" model="ir.rule">
+            <field name="name">SaaS Plan - User can read plans</field>
+            <field name="model_id" ref="model_saas_plan"/>
+            <field name="groups" eval="[(4, ref('group_saas_user'))]"/>
+            <field name="perm_read">1</field>
+            <field name="perm_create">0</field>
+            <field name="perm_write">0</field>
+            <field name="perm_unlink">0</field>
+            <field name="domain_force">[(1, '=', 1)]</field>
+        </record>
+
+    </data>
+</odoo>

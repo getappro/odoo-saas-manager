@@ -1,0 +1,35 @@
+/* SaaS Manager Dashboard Styles */
+
+.saas_dashboard_container {
+    padding: 20px;
+}
+
+.saas_stat_card {
+    background: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.saas_stat_card h3 {
+    color: #714B67;
+    margin-bottom: 10px;
+}
+
+.saas_stat_value {
+    font-size: 2.5em;
+    font-weight: bold;
+    color: #333;
+}
+
+.saas_chart_container {
+    background: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    min-height: 300px;
+}
+
+/* TODO Phase 2: Add more dashboard styles */

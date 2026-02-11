@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        
+        <!-- SaaS Instance Form View -->
+        <record id="view_saas_instance_form" model="ir.ui.view">
+            <field name="name">saas.instance.form</field>
+            <field name="model">saas.instance</field>
+            <field name="arch" type="xml">
+                <form string="SaaS Instance">
+                    <header>
+                        <button name="action_provision_instance" 
+                                type="object" 
+                                string="Provision Instance"
+                                class="oe_highlight"
+                                invisible="state != 'draft'"/>
+                        <button name="action_access_instance" 
+                                type="object" 
+                                string="Access Instance"
+                                class="oe_highlight"
+                                invisible="state not in ['active', 'suspended']"/>
+                        <button name="action_sso_login"
+                                type="object"
+                                string="Login (SSO)"
+                                class="btn-primary"
+                                invisible="state not in ['active', 'suspended']"/>
+                        <button name="action_sync_user_limit"
+                                type="object" 
+                                string="Sync User Limit" 
+                                class="btn-info"
+                                invisible="state not in ['active', 'suspended']"
+                                icon="fa-refresh"/>
+                        <button name="action_suspend" 
+                                type="object" 
+                                string="Suspend"
+                                invisible="state != 'active'"/>
+                        <button name="action_reactivate" 
+                                type="object" 
+                                string="Reactivate"
+                                invisible="state not in ['suspended', 'expired']"/>
+                        <button name="action_terminate" 
+                                type="object" 
+                                string="Terminate"
+                                confirm="Are you sure you want to terminate this instance? This action is irreversible."
+                                groups="saas_manager.group_saas_admin"
+                                invisible="state in ['terminated', 'draft']"/>
+                        <field name="state" widget="statusbar" 
+                               statusbar_visible="draft,provisioning,active"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button class="oe_stat_button" type="object" name="action_access_instance" icon="fa-external-link"
+                                    invisible="state not in ['active', 'suspended']">
+                                <div class="o_field_widget o_stat_info">
+                                    <span class="o_stat_text">Open</span>
+                                    <span class="o_stat_text">Instance</span>
+                                </div>
+                            </button>
+                            <button class="oe_stat_button" type="object" name="action_sso_login" icon="fa-sign-in"
+                                    invisible="state not in ['active', 'suspended']">
+                                <div class="o_field_widget o_stat_info">
+                                    <span class="o_stat_text">Login</span>
+                                    <span class="o_stat_text">(SSO)</span>
+                                </div>
+                            </button>
+                        </div>
+                        <div class="oe_title">
+                            <label for="name"/>
+                            <h1><field name="name" placeholder="Instance Name"/></h1>
+                            <div class="o_row">
+                                <field name="domain" readonly="1" widget="url"/>
+                            </div>
+                        </div>
+                        <group>
+                            <group string="Configuration">
+                                <field name="partner_id" widget="many2one_avatar_user"/>
+                                <field name="template_id" options="{'no_create': True}"/>
+                                <field name="plan_id" options="{'no_create': True}"/>
+                                <field name="server_id" options="{'no_create': True}"/>
+                                <field name="protocol"/>
+                            </group>
+                            <group string="Technical">
+                                <field name="database_name"/>
+                                <field name="subdomain"/>
+                                <field name="version"/>
+                            </group>
+                        </group>
+                        <group>
+                            <group string="Credentials">
+                                <field name="admin_login"/>
+                                <field name="admin_password" password="True"/>
+                                <field name="agent_impersonate_login"/>
+                                <field name="agent_secret" readonly="1"/>
+                            </group>
+                            <group string="User Management">
+                                <field name="user_limit"/>
+                                <field name="current_users"/>
+                                <field name="users_percentage" widget="percentage"/>
+                                <field name="last_sync_date" readonly="1"/>
+                            </group>
+                        </group>
+                        <group>
+                            <group string="Storage">
+                                <field name="storage_used" readonly="1"/>
+                            </group>
+                            <group string="Dates">
+                                <field name="activation_date" readonly="1"/>
+                                <field name="expiration_date"/>
+                            </group>
+                        </group>
+                        <group>
+                            <group string="Subscription">
+                                <field name="subscription_id"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Notes">
+                                <field name="notes" placeholder="Internal notes..."/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <chatter/>
+                </form>
+            </field>
+        </record>
+
+        <!-- SaaS Instance List View (Odoo 18 - using <list>) -->
+        <record id="view_saas_instance_list" model="ir.ui.view">
+            <field name="name">saas.instance.list</field>
+            <field name="model">saas.instance</field>
+            <field name="arch" type="xml">
+                <list string="SaaS Instances" sample="1" multi_edit="1">
+                    <field name="name"/>
+                    <field name="partner_id" widget="many2one_avatar_user"/>
+                    <field name="domain" widget="url"/>
+                    <field name="template_id"/>
+                    <field name="plan_id"/>
+                    <field name="server_id"/>
+                    <field name="current_users" optional="show"/>
+                    <field name="user_limit" optional="show"/>
+                    <field name="users_percentage" widget="percentage" optional="show"/>
+                    <field name="state" widget="badge"
+                           decoration-success="state == 'active'"
+                           decoration-info="state == 'provisioning'"
+                           decoration-warning="state == 'suspended'"
+                           decoration-danger="state == 'expired'"
+                           decoration-muted="state == 'terminated'"/>
+                    <field name="storage_used" optional="hide"/>
+                    <field name="activation_date" optional="show"/>
+                    <field name="expiration_date" optional="show"/>
+                    <field name="active" widget="boolean_toggle" optional="hide"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- SaaS Instance Kanban View -->
+        <record id="view_saas_instance_kanban" model="ir.ui.view">
+            <field name="name">saas.instance.kanban</field>
+            <field name="model">saas.instance</field>
+            <field name="arch" type="xml">
+                <kanban string="SaaS Instances" default_group_by="state" sample="1" class="o_kanban_mobile">
+                    <field name="id"/>
+                    <field name="name"/>
+                    <field name="partner_id"/>
+                    <field name="domain"/>
+                    <field name="state"/>
+                    <field name="color"/>
+                    <field name="template_id"/>
+                    <field name="plan_id"/>
+                    <templates>
+                        <t t-name="card" class="flex-row">
+                            <aside>
+                                <field name="partner_id" widget="many2one_avatar_user"/>
+                            </aside>
+                            <main>
+                                <field name="name" class="fw-bold fs-5"/>
+                                <div class="text-muted">
+                                    <i class="fa fa-link"/> <field name="domain"/>
+                                </div>
+                                <div class="mt-1">
+                                    <span class="badge" t-att-class="
+                                        record.state.raw_value == 'active' ? 'text-bg-success' :
+                                        record.state.raw_value == 'provisioning' ? 'text-bg-info' :
+                                        record.state.raw_value == 'suspended' ? 'text-bg-warning' :
+                                        record.state.raw_value == 'expired' ? 'text-bg-danger' :
+                                        'text-bg-secondary'
+                                    ">
+                                        <field name="state"/>
+                                    </span>
+                                </div>
+                                <div class="mt-2">
+                                    <i class="fa fa-cube"/> <field name="template_id"/>
+                                    <span class="ms-2"><i class="fa fa-tag"/> <field name="plan_id"/></span>
+                                </div>
+                            </main>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <!-- SaaS Instance Search View -->
+        <record id="view_saas_instance_search" model="ir.ui.view">
+            <field name="name">saas.instance.search</field>
+            <field name="model">saas.instance</field>
+            <field name="arch" type="xml">
+                <search string="SaaS Instances">
+                    <field name="name"/>
+                    <field name="partner_id"/>
+                    <field name="domain"/>
+                    <field name="database_name"/>
+                    <field name="subdomain"/>
+                    <field name="template_id"/>
+                    <field name="plan_id"/>
+                    <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
+                    <filter string="Provisioning" name="provisioning" domain="[('state', '=', 'provisioning')]"/>
+                    <filter string="Active" name="active_instances" domain="[('state', '=', 'active')]"/>
+                    <filter string="Suspended" name="suspended" domain="[('state', '=', 'suspended')]"/>
+                    <filter string="Expired" name="expired" domain="[('state', '=', 'expired')]"/>
+                    <separator/>
+                    <filter string="Expiring Soon" name="expiring_soon" 
+                            domain="[('expiration_date', '&lt;=', (context_today() + datetime.timedelta(days=7)).strftime('%Y-%m-%d')), ('state', '=', 'active')]"/>
+                    <separator/>
+                    <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
+                    <group expand="0" string="Group By">
+                        <filter string="Customer" name="group_partner" context="{'group_by': 'partner_id'}"/>
+                        <filter string="Template" name="group_template" context="{'group_by': 'template_id'}"/>
+                        <filter string="Plan" name="group_plan" context="{'group_by': 'plan_id'}"/>
+                        <filter string="State" name="group_state" context="{'group_by': 'state'}"/>
+                        <filter string="Activation Month" name="group_activation_month" context="{'group_by': 'activation_date:month'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- SaaS Instance Action -->
+        <record id="action_saas_instance" model="ir.actions.act_window">
+            <field name="name">Instances</field>
+            <field name="res_model">saas.instance</field>
+            <field name="view_mode">kanban,list,form</field>
+            <field name="context">{'search_default_active_instances': 1}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create your first SaaS Instance
+                </p>
+                <p>
+                    Instances are client databases provisioned from templates in ~10 seconds.
+                </p>
+            </field>
+        </record>
+
+    </data>
+</odoo>

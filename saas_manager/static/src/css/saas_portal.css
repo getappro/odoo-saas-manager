@@ -1,0 +1,60 @@
+/* SaaS Manager Portal Styles */
+
+.saas_portal_container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.saas_instance_card {
+    background: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: box-shadow 0.3s;
+}
+
+.saas_instance_card:hover {
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.saas_instance_status {
+    display: inline-block;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 0.9em;
+}
+
+.saas_instance_status.active {
+    background: #28a745;
+    color: #fff;
+}
+
+.saas_instance_status.suspended {
+    background: #ffc107;
+    color: #333;
+}
+
+.saas_instance_status.expired {
+    background: #dc3545;
+    color: #fff;
+}
+
+.saas_access_button {
+    background: #714B67;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 4px;
+    text-decoration: none;
+    display: inline-block;
+    margin-top: 10px;
+}
+
+.saas_access_button:hover {
+    background: #5a3a52;
+    color: #fff;
+}
+
+/* TODO Phase 2: Add more portal styles */

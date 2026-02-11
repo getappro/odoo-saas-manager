@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Email Template: Instance Provisioned -->
+        <record id="mail_template_instance_provisioned" model="mail.template">
+            <field name="name">SaaS: Instance Provisioned</field>
+            <field name="model_id" ref="model_saas_instance"/>
+            <field name="subject">Your SaaS Instance is Ready - {{ object.name }}</field>
+            <field name="email_from">{{ user.email_formatted }}</field>
+            <field name="partner_to">{{ object.partner_id.id }}</field>
+            <field name="body_html"><![CDATA[
+<div style="background-color: #0F172A; font-family: 'Poppins', Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 40px 20px; color: #F8FAFC; border-radius: 12px;" data-oe-version="1.2">
+    <div style="text-align: center; margin-bottom: 30px;">
+        <h1 style="border-radius:0px;border-style:none;padding:0px;box-sizing:border-box;border-left-color:#06b6d4;border-bottom-color:#06b6d4;border-right-color:#06b6d4;border-top-color:#06b6d4;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;line-height:1.2;font-weight:500;font-family:'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Ubuntu, 'Noto Sans', Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';color: #06B6D4; margin: 0; font-size: 24px; letter-spacing: 1px;">DeepCode</h1>
+        <img style="vertical-align:middle;border-radius:0px;border-style:none;padding:0px;margin:5px 0 16px 0;box-sizing:border-box;border-left-color:#8b5cf6;border-bottom-color:#8b5cf6;border-right-color:#8b5cf6;border-top-color:#8b5cf6;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;color: #8B5CF6; font-size: 14px; margin-top: 5px;"/>Deep Tech, Simple Business.</div>
+
+    <div style="border-top: 1px solid #272e3f; padding-top: 30px;">
+        <h2 style="border-radius:0px;border-style:none;padding:0px;margin:0px 0 8px 0;box-sizing:border-box;border-left-color:#ffffff;border-bottom-color:#ffffff;border-right-color:#ffffff;border-top-color:#ffffff;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;font-size:21px;line-height:1.2;font-family:'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Ubuntu, 'Noto Sans', Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';color: #FFFFFF; font-weight: 600;">Votre instance est prête ! 🚀</h2>
+        <p style="border-radius:0px;border-style:none;padding:0px;margin:0px 0 16px 0;box-sizing:border-box;border-left-color:#cbd5e1;border-bottom-color:#cbd5e1;border-right-color:#cbd5e1;border-top-color:#cbd5e1;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;color: #CBD5E1; line-height: 1.6;">
+            Bonjour <t t-out="object.partner_id.name or 'Client'"></t>, <br/>
+            Votre environnement de travail intelligent a été déployé avec succès. Vous pouvez désormais piloter votre activité avec la puissance de DeepCode.
+        </p>
+
+        <div style="background-color: #262e3f; padding: 25px; margin: 30px 0; border-radius: 8px; border: 1px solid #06B6D4;">
+            <h3 style="border-radius:0px;border-style:none;padding:0px;margin:0px 0 8px 0;box-sizing:border-box;border-left-color:#06b6d4;border-bottom-color:#06b6d4;border-right-color:#06b6d4;border-top-color:#06b6d4;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;line-height:1.2;font-weight:500;font-family:'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Ubuntu, 'Noto Sans', Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';margin-top: 0; color: #06B6D4; font-size: 16px; text-transform: uppercase;">Vos accès sécurisés :</h3>
+            <table style="border-radius: 0px; border-style: none; padding: 0px; margin: 0px; box-sizing: border-box; border-color: #808080; border-width: 0px; border-collapse: collapse; caption-side: bottom; width: 100%; font-size: 14px; font-family: Poppins, Arial, sans-serif; color: #f8fafc;" width="100%">
+                <tbody style="border-radius:0px;border-style:none;padding:0px;margin:0px;box-sizing:border-box;border-left-color:#808080;border-bottom-color:#808080;border-right-color:#808080;border-top-color:#808080;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;"><tr style="border-radius:0px;border-style:none;padding:0px;margin:0px;box-sizing:border-box;border-left-color:#808080;border-bottom-color:#808080;border-right-color:#808080;border-top-color:#808080;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;">
+                    <td style="border-radius:0px;border-style:none;margin:0px;box-sizing:border-box;border-left-color:#808080;border-bottom-color:#808080;border-right-color:#808080;border-top-color:#808080;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;padding: 8px 0; color: #94A3B8;">Instance :</td>
+                    <td style="border-radius:0px;border-style:none;margin:0px;box-sizing:border-box;border-left-color:#808080;border-bottom-color:#808080;border-right-color:#808080;border-top-color:#808080;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;padding: 8px 0px; font-weight: bold; color: #f8fafc;"><t t-out="object.name or ''"></t></td>
+                </tr>
+                <tr style="border-radius:0px;border-style:none;padding:0px;margin:0px;box-sizing:border-box;border-left-color:#808080;border-bottom-color:#808080;border-right-color:#808080;border-top-color:#808080;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;">
+                    <td style="border-radius:0px;border-style:none;margin:0px;box-sizing:border-box;border-left-color:#808080;border-bottom-color:#808080;border-right-color:#808080;border-top-color:#808080;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;padding: 8px 0; color: #94A3B8;">Plan :</td>
+                    <td style="border-radius:0px;border-style:none;margin:0px;box-sizing:border-box;border-left-color:#808080;border-bottom-color:#808080;border-right-color:#808080;border-top-color:#808080;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;padding: 8px 0px; color: #f8fafc;"><span style="background: #8B5CF6; padding: 2px 8px; border-radius: 4px; font-size: 12px;"><t t-out="object.plan_id.name or ''"></t></span></td>
+                </tr>
+                <tr style="border-radius:0px;border-style:none;padding:0px;margin:0px;box-sizing:border-box;border-left-color:#808080;border-bottom-color:#808080;border-right-color:#808080;border-top-color:#808080;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;">
+                    <td style="border-radius:0px;border-style:none;margin:0px;box-sizing:border-box;border-left-color:#808080;border-bottom-color:#808080;border-right-color:#808080;border-top-color:#808080;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;padding: 8px 0; color: #94A3B8;">Utilisateur :</td>
+                    <td style="border-radius:0px;border-style:none;margin:0px;box-sizing:border-box;border-left-color:#808080;border-bottom-color:#808080;border-right-color:#808080;border-top-color:#808080;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;padding: 8px 0; font-family: monospace; color: #06B6D4;"><t t-out="object.admin_login or ''"></t></td>
+                </tr>
+                <tr style="border-radius:0px;border-style:none;padding:0px;margin:0px;box-sizing:border-box;border-left-color:#808080;border-bottom-color:#808080;border-right-color:#808080;border-top-color:#808080;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;">
+                    <td style="border-radius:0px;border-style:none;margin:0px;box-sizing:border-box;border-left-color:#808080;border-bottom-color:#808080;border-right-color:#808080;border-top-color:#808080;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;padding: 8px 0; color: #94A3B8;">Mot de passe :</td>
+                    <td style="border-radius:0px;border-style:none;margin:0px;box-sizing:border-box;border-left-color:#808080;border-bottom-color:#808080;border-right-color:#808080;border-top-color:#808080;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;padding: 8px 0; font-family: monospace; color: #06B6D4;"><t t-out="object.admin_password or ''"></t></td>
+                </tr>
+            </tbody></table>
+        </div>
+
+        <div style="text-align: center; margin: 40px 0;">
+            <a t-att-href="'https://' + (object.domain or '')" style="color: #f8fafc; border-style: none; margin: 0px; box-sizing: border-box; border-color: #008f8c; border-width: 0px; background: linear-gradient(90deg, #06b6d4 0%, #8b5cf6 100%); padding: 16px 32px; text-decoration: none; border-radius: 50px; font-weight: bold; display: inline-block; box-shadow: #0c475d 0px 4px 15px;"><font style="color: white;">
+                Accéder à mon espace DeepCode&nbsp;</font></a>
+        </div>
+
+        <p style="border-radius:0px;border-style:none;padding:0px;margin:0px 0 16px 0;box-sizing:border-box;border-left-color:#94a3b8;border-bottom-color:#94a3b8;border-right-color:#94a3b8;border-top-color:#94a3b8;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;color: #94A3B8; font-size: 13px; text-align: center; line-height: 1.5;">
+            Lien direct : <a t-att-href="'https://' + (object.domain or '')" style="border-radius:0px;border-style:none;padding:0px;margin:0px;box-sizing:border-box;border-left-color:#06b6d4;border-bottom-color:#06b6d4;border-right-color:#06b6d4;border-top-color:#06b6d4;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;color: #06B6D4; text-decoration: none;">https://<t t-out="object.domain or ''"></t></a>
+        </p>
+    </div>
+
+    <div style="margin-top: 50px; border-top: 1px solid #272e3f; padding-top: 20px; text-align: center;">
+        <p style="border-radius:0px;border-style:none;padding:0px;margin:0px 0 16px 0;box-sizing:border-box;border-left-color:#64748b;border-bottom-color:#64748b;border-right-color:#64748b;border-top-color:#64748b;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;color: #64748B; font-size: 12px;">
+            © 2026 DeepCode - Deep Tech, Simple Business.<br/>
+            Besoin d'aide ? Contactez notre support technique.
+        </p>
+    </div>
+</div>
+            ]]></field>
+        </record>
+
+        <!-- Email Template: Subscription Expiring -->
+        <record id="mail_template_subscription_expiring" model="mail.template">
+            <field name="name">SaaS: Subscription Expiring</field>
+            <field name="model_id" ref="model_saas_subscription"/>
+            <field name="subject">Your SaaS Subscription is Expiring Soon - {{ object.instance_id.name }}</field>
+            <field name="email_from">{{ user.email_formatted }}</field>
+            <field name="partner_to">{{ object.partner_id.id }}</field>
+            <field name="body_html"><![CDATA[
+<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+    <h2 style="color: #d9534f;">Subscription Expiring Soon</h2>
+    <p>Dear <t t-out="object.partner_id.name or 'Customer'">Customer</t>,</p>
+    <p>Your SaaS subscription is expiring soon.</p>
+    
+    <div style="background-color: #fff3cd; padding: 20px; margin: 20px 0; border-radius: 5px; border-left: 4px solid #ffc107;">
+        <h3 style="margin-top: 0;">Subscription Details:</h3>
+        <ul style="list-style: none; padding: 0;">
+            <li><strong>Instance:</strong> <t t-out="object.instance_id.name or ''">Instance</t></li>
+            <li><strong>Plan:</strong> <t t-out="object.plan_id.name or ''">Plan</t></li>
+            <li><strong>Expiration Date:</strong> <t t-out="object.end_date or ''">Date</t></li>
+        </ul>
+    </div>
+    
+    <p>Please renew your subscription to avoid service interruption.</p>
+    
+    <p style="color: #888; font-size: 12px; margin-top: 30px;">
+        If auto-renewal is enabled, your subscription will be automatically renewed.
+    </p>
+</div>
+            ]]></field>
+        </record>
+
+        <!-- Email Template: Instance Suspended -->
+        <record id="mail_template_instance_suspended" model="mail.template">
+            <field name="name">SaaS: Instance Suspended</field>
+            <field name="model_id" ref="model_saas_instance"/>
+            <field name="subject">Your SaaS Instance Has Been Suspended - {{ object.name }}</field>
+            <field name="email_from">{{ user.email_formatted }}</field>
+            <field name="partner_to">{{ object.partner_id.id }}</field>
+            <field name="body_html"><![CDATA[
+<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+    <h2 style="color: #d9534f;">Instance Suspended</h2>
+    <p>Dear <t t-out="object.partner_id.name or 'Customer'">Customer</t>,</p>
+    <p>Your SaaS instance has been suspended due to subscription expiration.</p>
+    
+    <div style="background-color: #f8d7da; padding: 20px; margin: 20px 0; border-radius: 5px; border-left: 4px solid #d9534f;">
+        <h3 style="margin-top: 0;">Instance Details:</h3>
+        <ul style="list-style: none; padding: 0;">
+            <li><strong>Instance Name:</strong> <t t-out="object.name or ''">Instance</t></li>
+            <li><strong>URL:</strong> <t t-out="object.domain or ''">example.com</t></li>
+        </ul>
+    </div>
+    
+    <p>To reactivate your instance, please renew your subscription.</p>
+    
+    <p style="color: #888; font-size: 12px; margin-top: 30px;">
+        Contact our support team if you have any questions.
+    </p>
+</div>
+            ]]></field>
+        </record>
+
+        <!-- Email Template: Instance Reactivated -->
+        <record id="mail_template_instance_reactivated" model="mail.template">
+            <field name="name">SaaS: Instance Reactivated</field>
+            <field name="model_id" ref="model_saas_instance"/>
+            <field name="subject">Your SaaS Instance Has Been Reactivated - {{ object.name }}</field>
+            <field name="email_from">{{ user.email_formatted }}</field>
+            <field name="partner_to">{{ object.partner_id.id }}</field>
+            <field name="body_html"><![CDATA[
+<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+    <h2 style="color: #5cb85c;">Instance Reactivated</h2>
+    <p>Dear <t t-out="object.partner_id.name or 'Customer'">Customer</t>,</p>
+    <p>Your SaaS instance has been successfully reactivated and is now back online.</p>
+
+    <div style="background-color: #d4edda; padding: 20px; margin: 20px 0; border-radius: 5px; border-left: 4px solid #5cb85c;">
+        <h3 style="margin-top: 0;">Instance Details:</h3>
+        <ul style="list-style: none; padding: 0;">
+            <li><strong>Instance Name:</strong> <t t-out="object.name or ''">Instance</t></li>
+            <li><strong>URL:</strong> <a href="https://<t t-out="object.domain or ''">example.com</t>">https://<t t-out="object.domain or ''">example.com</t></a></li>
+            <li><strong>Status:</strong> Active</li>
+            <li><strong>Reactivation Date:</strong> <t t-out="object.write_date or ''">Date</t></li>
+        </ul>
+    </div>
+
+    <p>
+        <a href="https://<t t-out="object.domain or ''">example.com</t>" style="background-color: #5cb85c; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block;">
+            Access Your Instance
+        </a>
+    </p>
+
+    <p style="color: #888; font-size: 12px; margin-top: 30px;">
+        If you have any questions, please don't hesitate to contact our support team.
+    </p>
+</div>
+            ]]></field>
+        </record>
+
+        <!-- Email Template: Instance Terminated -->
+        <record id="mail_template_instance_terminated" model="mail.template">
+            <field name="name">SaaS: Instance Terminated</field>
+            <field name="model_id" ref="model_saas_instance"/>
+            <field name="subject">Your SaaS Instance Has Been Terminated - {{ object.name }}</field>
+            <field name="email_from">{{ user.email_formatted }}</field>
+            <field name="partner_to">{{ object.partner_id.id }}</field>
+            <field name="body_html"><![CDATA[
+<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+    <h2 style="color: #d9534f;">Instance Terminated</h2>
+    <p>Dear <t t-out="object.partner_id.name or 'Customer'">Customer</t>,</p>
+    <p>Your SaaS instance has been terminated and the database has been permanently deleted.</p>
+
+    <div style="background-color: #f8d7da; padding: 20px; margin: 20px 0; border-radius: 5px; border-left: 4px solid #d9534f;">
+        <h3 style="margin-top: 0;">Instance Information:</h3>
+        <ul style="list-style: none; padding: 0;">
+            <li><strong>Instance Name:</strong> <t t-out="object.name or ''">Instance</t></li>
+            <li><strong>Database Name:</strong> <t t-out="object.database_name or ''">Database</t></li>
+            <li><strong>Termination Date:</strong> <t t-out="object.write_date or ''">Date</t></li>
+        </ul>
+    </div>
+
+    <p style="color: #888;">
+        All data associated with this instance has been permanently deleted. If this was done in error, please contact our support team immediately.
+    </p>
+
+    <p style="color: #888; font-size: 12px; margin-top: 30px;">
+        Contact our support team if you have any questions.
+    </p>
+</div>
+            ]]></field>
+        </record>
+
+    </data>
+</odoo>
+
+

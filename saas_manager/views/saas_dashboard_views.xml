@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        
+        <!-- SaaS Dashboard View (Placeholder for Phase 2) -->
+        <record id="view_saas_dashboard" model="ir.ui.view">
+            <field name="name">saas.dashboard</field>
+            <field name="model">saas.instance</field>
+            <field name="arch" type="xml">
+                <form string="SaaS Dashboard">
+                    <sheet>
+                        <div class="o_form_sheet_bg">
+                            <div class="alert alert-info" role="alert">
+                                <h4 class="alert-heading">SaaS Dashboard</h4>
+                                <p>
+                                    The interactive dashboard with statistics and charts will be implemented in Phase 2.
+                                </p>
+                                <hr/>
+                                <p class="mb-0">
+                                    For now, use the Instances, Subscriptions, Templates, and Plans menus to manage your SaaS platform.
+                                </p>
+                            </div>
+                        </div>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Dashboard Action -->
+        <record id="action_saas_dashboard" model="ir.actions.act_window">
+            <field name="name">Dashboard</field>
+            <field name="res_model">saas.instance</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_saas_dashboard"/>
+            <field name="target">inline</field>
+        </record>
+
+    </data>
+</odoo>

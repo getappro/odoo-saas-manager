@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        
+        <!-- SaaS Subscription Form View -->
+        <record id="view_saas_subscription_form" model="ir.ui.view">
+            <field name="name">saas.subscription.form</field>
+            <field name="model">saas.subscription</field>
+            <field name="arch" type="xml">
+                <form string="SaaS Subscription">
+                    <header>
+                        <button name="action_activate" 
+                                type="object" 
+                                string="Activate"
+                                class="oe_highlight"
+                                invisible="state != 'draft'"/>
+                        <button name="action_renew" 
+                                type="object" 
+                                string="Renew"
+                                class="oe_highlight"
+                                invisible="state not in ['active', 'expired']"/>
+                        <button name="action_cancel" 
+                                type="object" 
+                                string="Cancel"
+                                invisible="state == 'cancelled'"/>
+                        <field name="state" widget="statusbar" 
+                               statusbar_visible="draft,active,expired"/>
+                    </header>
+                    <sheet>
+                        <!-- TODO Phase 2: Uncomment when invoice integration is ready -->
+                        <!-- <div class="oe_button_box" name="button_box">
+                            <button class="oe_stat_button" type="object" name="action_view_invoices" icon="fa-file-text-o"
+                                    invisible="invoice_count == 0">
+                                <field string="Invoices" name="invoice_count" widget="statinfo"/>
+                            </button>
+                        </div> -->
+                        <widget name="web_ribbon" title="Trial" bg_color="text-bg-info" invisible="not is_trial"/>
+                        <div class="oe_title">
+                            <label for="name"/>
+                            <h1><field name="name" readonly="1"/></h1>
+                        </div>
+                        <group>
+                            <group string="Subscription Details">
+                                <field name="instance_id" options="{'no_create': True}"/>
+                                <field name="partner_id" readonly="1"/>
+                                <field name="plan_id" options="{'no_create': True}"/>
+                                <field name="period"/>
+                            </group>
+                            <group string="Configuration">
+                                <field name="is_trial" widget="boolean_toggle"/>
+                                <field name="auto_renew" widget="boolean_toggle"/>
+                                <field name="payment_state" widget="badge"
+                                       decoration-success="payment_state == 'paid'"
+                                       decoration-warning="payment_state == 'pending'"
+                                       decoration-danger="payment_state == 'overdue'"/>
+                                <field name="amount" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                            </group>
+                        </group>
+                        <group>
+                            <group string="Period">
+                                <field name="start_date"/>
+                                <field name="end_date"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <!-- TODO Phase 2: Uncomment when account module is integrated -->
+                            <!-- <page string="Invoices" invisible="invoice_count == 0">
+                                <field name="invoice_ids">
+                                    <list string="Invoices">
+                                        <field name="name"/>
+                                        <field name="invoice_date"/>
+                                        <field name="amount_total" widget="monetary"/>
+                                        <field name="state" widget="badge"
+                                               decoration-info="state == 'draft'"
+                                               decoration-success="state == 'posted'"/>
+                                    </list>
+                                </field>
+                            </page> -->
+                            <page string="Notes">
+                                <field name="notes" placeholder="Internal notes..."/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <chatter/>
+                </form>
+            </field>
+        </record>
+
+        <!-- SaaS Subscription List View (Odoo 18 - using <list>) -->
+        <record id="view_saas_subscription_list" model="ir.ui.view">
+            <field name="name">saas.subscription.list</field>
+            <field name="model">saas.subscription</field>
+            <field name="arch" type="xml">
+                <list string="SaaS Subscriptions" sample="1">
+                    <field name="name"/>
+                    <field name="partner_id" widget="many2one_avatar_user"/>
+                    <field name="instance_id"/>
+                    <field name="plan_id"/>
+                    <field name="period"/>
+                    <field name="start_date"/>
+                    <field name="end_date"/>
+                    <field name="amount" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                    <field name="state" widget="badge"
+                           decoration-success="state == 'active'"
+                           decoration-info="state == 'draft'"
+                           decoration-muted="state == 'expired'"
+                           decoration-danger="state == 'cancelled'"/>
+                    <field name="payment_state" widget="badge"
+                           decoration-success="payment_state == 'paid'"
+                           decoration-warning="payment_state == 'pending'"
+                           decoration-danger="payment_state == 'overdue'"
+                           optional="show"/>
+                    <field name="auto_renew" widget="boolean_toggle" optional="hide"/>
+                    <field name="is_trial" widget="badge" optional="hide"
+                           decoration-info="is_trial == True"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- SaaS Subscription Kanban View -->
+        <record id="view_saas_subscription_kanban" model="ir.ui.view">
+            <field name="name">saas.subscription.kanban</field>
+            <field name="model">saas.subscription</field>
+            <field name="arch" type="xml">
+                <kanban string="SaaS Subscriptions" default_group_by="state" sample="1">
+                    <field name="id"/>
+                    <field name="name"/>
+                    <field name="partner_id"/>
+                    <field name="instance_id"/>
+                    <field name="plan_id"/>
+                    <field name="state"/>
+                    <field name="amount"/>
+                    <field name="is_trial"/>
+                    <templates>
+                        <t t-name="card">
+                            <div class="oe_kanban_global_click">
+                                <div class="o_kanban_record_top">
+                                    <div class="o_kanban_record_headings">
+                                        <strong class="o_kanban_record_title">
+                                            <field name="name"/>
+                                        </strong>
+                                        <div class="text-muted">
+                                            <field name="instance_id"/>
+                                        </div>
+                                    </div>
+                                    <span class="badge badge-pill" t-if="record.is_trial.raw_value" 
+                                          t-attf-class="badge-info">Trial</span>
+                                </div>
+                                <div class="o_kanban_record_body">
+                                    <div><i class="fa fa-user"/> <field name="partner_id"/></div>
+                                    <div><i class="fa fa-tag"/> <field name="plan_id"/></div>
+                                    <div class="mt-2">
+                                        <strong class="text-primary">
+                                            <field name="amount" widget="monetary"/> / <field name="period"/>
+                                        </strong>
+                                    </div>
+                                </div>
+                                <div class="o_kanban_record_bottom">
+                                    <div class="oe_kanban_bottom_left">
+                                        <field name="start_date"/> → <field name="end_date"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <!-- SaaS Subscription Search View -->
+        <record id="view_saas_subscription_search" model="ir.ui.view">
+            <field name="name">saas.subscription.search</field>
+            <field name="model">saas.subscription</field>
+            <field name="arch" type="xml">
+                <search string="SaaS Subscriptions">
+                    <field name="name"/>
+                    <field name="partner_id"/>
+                    <field name="instance_id"/>
+                    <field name="plan_id"/>
+                    <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
+                    <filter string="Active" name="active_subscriptions" domain="[('state', '=', 'active')]"/>
+                    <filter string="Expired" name="expired" domain="[('state', '=', 'expired')]"/>
+                    <separator/>
+                    <filter string="Trial" name="trial" domain="[('is_trial', '=', True)]"/>
+                    <filter string="Auto-Renew" name="auto_renew" domain="[('auto_renew', '=', True)]"/>
+                    <separator/>
+                    <filter string="Payment Pending" name="payment_pending" domain="[('payment_state', '=', 'pending')]"/>
+                    <filter string="Paid" name="paid" domain="[('payment_state', '=', 'paid')]"/>
+                    <filter string="Overdue" name="overdue" domain="[('payment_state', '=', 'overdue')]"/>
+                    <group expand="0" string="Group By">
+                        <filter string="Customer" name="group_partner" context="{'group_by': 'partner_id'}"/>
+                        <filter string="Instance" name="group_instance" context="{'group_by': 'instance_id'}"/>
+                        <filter string="Plan" name="group_plan" context="{'group_by': 'plan_id'}"/>
+                        <filter string="State" name="group_state" context="{'group_by': 'state'}"/>
+                        <filter string="Payment State" name="group_payment_state" context="{'group_by': 'payment_state'}"/>
+                        <filter string="Period" name="group_period" context="{'group_by': 'period'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- SaaS Subscription Action -->
+        <record id="action_saas_subscription" model="ir.actions.act_window">
+            <field name="name">Subscriptions</field>
+            <field name="res_model">saas.subscription</field>
+            <field name="view_mode">list,kanban,form</field>
+            <field name="context">{'search_default_active_subscriptions': 1}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create your first Subscription
+                </p>
+                <p>
+                    Subscriptions manage billing and renewal for SaaS instances.
+                </p>
+            </field>
+        </record>
+
+    </data>
+</odoo>

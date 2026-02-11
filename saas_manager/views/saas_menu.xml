@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        
+        <!-- Main Menu -->
+        <menuitem id="menu_saas_main"
+                  name="SaaS Manager"
+                  sequence="100"
+                  web_icon="saas_manager,static/description/icon.ico"/>
+
+        <!-- Dashboard -->
+        <!--<menuitem id="menu_saas_dashboard"
+                  name="Dashboard"
+                  parent="menu_saas_main"
+                  action="action_saas_dashboard"
+                  sequence="1"/>-->
+
+        <!-- Operations -->
+        <menuitem id="menu_saas_operations"
+                  name="Operations"
+                  parent="menu_saas_main"
+                  sequence="10"/>
+
+        <menuitem id="menu_saas_instances"
+                  name="Instances"
+                  parent="menu_saas_operations"
+                  action="action_saas_instance"
+                  sequence="1"/>
+
+        <menuitem id="menu_saas_subscriptions"
+                  name="Subscriptions"
+                  parent="menu_saas_operations"
+                  action="action_saas_subscription"
+                  sequence="2"/>
+
+        <!-- Configuration -->
+        <menuitem id="menu_saas_configuration"
+                  name="Configuration"
+                  parent="menu_saas_main"
+                  sequence="90"
+                  groups="saas_manager.group_saas_manager,saas_manager.group_saas_admin"/>
+
+        <menuitem id="menu_saas_servers"
+                  name="Servers"
+                  parent="menu_saas_configuration"
+                  action="saas_server_action"
+                  sequence="1"
+                  groups="saas_manager.group_saas_manager,saas_manager.group_saas_admin"/>
+
+        <menuitem id="menu_saas_templates"
+                  name="Templates"
+                  parent="menu_saas_configuration"
+                  action="action_saas_template"
+                  sequence="2"
+                  groups="saas_manager.group_saas_manager,saas_manager.group_saas_admin"/>
+
+        <menuitem id="menu_saas_plans"
+                  name="Plans"
+                  parent="menu_saas_configuration"
+                  action="action_saas_plan"
+                  sequence="3"
+                  groups="saas_manager.group_saas_manager,saas_manager.group_saas_admin"/>
+
+    </data>
+</odoo>
