@@ -1,17 +1,27 @@
 import base64
 import io
 
-from odoo.service import common as service_common, db
+from odoo.service import db
+
+_original_dispatch = db.dispatch
 
 
-def backup(master_pwd, db_name, backup_format='zip'):
-    """Expose db.dump_db over RPC with super-admin check."""
-    service_common.check_super(master_pwd)
+def _backup_rpc(params):
+    # params: [master_pwd, db_name, backup_format?]
+    passwd, db_name = params[0], params[1]
+    backup_format = params[2] if len(params) > 2 else 'zip'
+    db.check_super(passwd)
     buffer = io.BytesIO()
     db.dump_db(db_name, buffer, backup_format=backup_format)
     buffer.seek(0)
     return base64.b64encode(buffer.read()).decode()
 
 
-db.dispatch['backup'] = backup
+def dispatch(method, params):
+    if method == 'backup':
+        return _backup_rpc(params)
+    return _original_dispatch(method, params)
 
+
+# monkey-patch
+db.dispatch = dispatch
