@@ -65,6 +65,7 @@
         'views/ir_model_data_views.xml',
         'views/ir_model_fields_views.xml',
         'views/ir_model_views.xml',
+        'views/portal_templates_views.xml',
         # data
         'data/ir_config_parameter_data.xml',
         # 'data/ir_module_module_data.xml',
