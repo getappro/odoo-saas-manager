@@ -13,7 +13,7 @@ class ResConfigSettings(models.TransientModel):
     _inherit = 'res.config.settings'
 
     app_system_name = fields.Char('System Name', help="Setup System Name,which replace Odoo",
-                                  default='odooAi', config_parameter='app_system_name')
+                                  default='DeepOS', config_parameter='app_system_name')
     app_show_lang = fields.Boolean('Show Quick Language Switcher',
                                    help="When enable,User can quick switch language in user menu",
                                    config_parameter='app_show_lang')
@@ -66,14 +66,14 @@ class ResConfigSettings(models.TransientModel):
     module_app_chatgpt = fields.Boolean("Ai Center", help='Use Ai to boost you business.')
     
     # 应用帮助文档
-    app_doc_root_url = fields.Char('Help of topic domain', config_parameter='app_doc_root_url', default='https://odooai.cn')
+    app_doc_root_url = fields.Char('Help of topic domain', config_parameter='app_doc_root_url', default='https://www.deepcode.ma')
 
     @api.model
     def set_module_url(self, rec=None):
         if not self._app_check_sys_op():
             raise UserError(_('Not allow.'))
         config_parameter = self.env['ir.config_parameter'].sudo()
-        app_enterprise_url = config_parameter.get_param('app_enterprise_url', 'https://www.odooai.cn')
+        app_enterprise_url = config_parameter.get_param('app_enterprise_url', 'https://www.deepcode.ma')
         modules = self.env['ir.module.module'].search([('license', 'like', 'OEEL%'), ('website', '!=', False)])
         if modules:
             sql = "UPDATE ir_module_module SET website = '%s' WHERE id IN %s" % (app_enterprise_url, tuple(modules.ids))
