@@ -183,11 +183,6 @@ class SaaSInstance(models.Model):
         default='18.0',
         help="Odoo version"
     )
-    subscription_id = fields.Many2one(
-        'saas.subscription',
-        string='Active Subscription',
-        help="Current active subscription"
-    )
     notes = fields.Text(
         string='Notes',
         help="Internal notes"

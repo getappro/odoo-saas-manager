@@ -45,8 +45,7 @@
         
         # Configuration
         'data/ir_config_parameter.xml',
-        'data/ir_sequence.xml',
-        
+
         # Master data
         'data/saas_server_data.xml',
         'data/saas_template_data.xml',
@@ -62,7 +61,6 @@
         'views/saas_template_views.xml',
         'views/saas_plan_views.xml',
         'views/saas_instance_views.xml',
-        'views/saas_subscription_views.xml',
         #'views/saas_dashboard_views.xml',
         'views/saas_menu.xml',
     ],

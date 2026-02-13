@@ -64,7 +64,7 @@
         </record>
 
         <!-- Email Template: Subscription Expiring -->
-        <record id="mail_template_subscription_expiring" model="mail.template">
+       <!-- <record id="mail_template_subscription_expiring" model="mail.template">
             <field name="name">SaaS: Subscription Expiring</field>
             <field name="model_id" ref="model_saas_subscription"/>
             <field name="subject">Your SaaS Subscription is Expiring Soon - {{ object.instance_id.name }}</field>
@@ -92,7 +92,7 @@
     </p>
 </div>
             ]]></field>
-        </record>
+        </record> -->
 
         <!-- Email Template: Instance Suspended -->
         <record id="mail_template_instance_suspended" model="mail.template">

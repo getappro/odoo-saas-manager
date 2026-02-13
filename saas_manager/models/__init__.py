@@ -6,5 +6,4 @@ from . import saas_server
 from . import saas_plan
 from . import saas_instance
 from . import saas_instance_stage
-from . import saas_subscription
 from . import res_partner

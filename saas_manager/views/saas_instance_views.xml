@@ -109,11 +109,6 @@
                                 <field name="expiration_date"/>
                             </group>
                         </group>
-                        <group>
-                            <group string="Subscription">
-                                <field name="subscription_id"/>
-                            </group>
-                        </group>
                         <notebook>
                             <page string="Notes">
                                 <field name="notes" placeholder="Internal notes..."/>

@@ -27,11 +27,7 @@
                   action="action_saas_instance"
                   sequence="1"/>
 
-        <menuitem id="menu_saas_subscriptions"
-                  name="Subscriptions"
-                  parent="menu_saas_operations"
-                  action="action_saas_subscription"
-                  sequence="2"/>
+        <!-- Subscription menu moved to saas_subscription_oca integration -->
 
         <!-- Configuration -->
         <menuitem id="menu_saas_configuration"

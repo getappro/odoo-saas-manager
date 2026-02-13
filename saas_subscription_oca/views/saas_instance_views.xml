@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_saas_instance_form_inherit_subscription_oca" model="ir.ui.view">
+            <field name="name">saas.instance.form.subscription.oca</field>
+            <field name="model">saas.instance</field>
+            <field name="inherit_id" ref="saas_manager.view_saas_instance_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='plan_id']" position="after">
+                    <field name="sale_subscription_id" options="{'no_create': True}"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_saas_instance_list_inherit_subscription_oca" model="ir.ui.view">
+            <field name="name">saas.instance.list.subscription.oca</field>
+            <field name="model">saas.instance</field>
+            <field name="inherit_id" ref="saas_manager.view_saas_instance_list"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='plan_id']" position="after">
+                    <field name="sale_subscription_id"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>
+

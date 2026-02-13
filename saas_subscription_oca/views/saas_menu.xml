@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <menuitem id="menu_saas_subscriptions"
+                  name="Subscriptions"
+                  parent="saas_manager.menu_saas_operations"
+                  action="subscription_oca.sale_subscription_action"
+                  sequence="2"/>
+    </data>
+</odoo>
+
