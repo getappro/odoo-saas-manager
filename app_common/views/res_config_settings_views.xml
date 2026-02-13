@@ -7,8 +7,8 @@
             <field name="inherit_id" ref="base.res_config_settings_view_form"/>
 			<field name="arch" type="xml">
 				<xpath expr="//app[@name='general_settings']" position="before">
-					<app name="app_common" data-string="odoAi Cloud" string="odooAi Cloud" data-key="app_common"
-                         logo="/app_common/static/description/odooai.png" groups="base.group_erp_manager">
+					<app name="app_common" data-string="DeepOS Cloud" string="DeepOS Cloud" data-key="app_common"
+                         logo="/app_common/static/description/odooai.png" groups="base.group_no_one">
                         <div id="app_slot1" class="o_hidden"></div>
 						<div id="app_odooai_banner" class="row app_settings_header my-0 ms-0 mw-100 bg-warning bg-opacity-25">
 							<div class="col-lg-12 col-md-12 ms-0 o_setting_box">
@@ -16,16 +16,16 @@
 									<div class="content-group">
 										<div class="row mt8">
 											<div name="app_odooai_link">
-												<a href="https://www.odooai.cn" target="_blank">Visit our website for more apps and Support.
+												<!--<a href="https://www.odooai.cn" target="_blank">Visit our website for more apps and Support.
 													https://www.odooai.cn
-												</a>
+												</a>-->
 											</div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <block title="odooAi Cloud" class="mt16" name="odooai_cloud_block">
+                        <!--<block title="odooAi Cloud" class="mt16" name="odooai_cloud_block">
                             <setting id="odooai_cloud_block_title" title="Setup the communication to odooAi Cloud" string="Setup the communication to odooAi Cloud">
                                 <div name="app_odooapp_link">
                                     <a href="https://www.odooapp.cn" target="_blank">Get the Industry Apps, Themes and Support from China odooapp store.
@@ -47,7 +47,7 @@
                                     </div>
                                 </div>
                             </setting>
-                        </block>
+                        </block>-->
                         <div id="app_slot2" class="o_hidden"></div>
                     </app>
 				</xpath>
@@ -55,7 +55,7 @@
 		</record>
 
 		<record id="action_odooai_cloud_config" model="ir.actions.act_window">
-			<field name="name">odooAi Cloud</field>
+			<field name="name">DeepOS Cloud</field>
 			<field name="type">ir.actions.act_window</field>
 			<field name="res_model">res.config.settings</field>
 			<field name="view_mode">form</field>

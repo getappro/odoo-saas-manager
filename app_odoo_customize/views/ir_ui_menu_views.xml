@@ -61,14 +61,14 @@
                 id="menu_app_group"
                 name="DeepOS"
                 parent="base.menu_administration"
-                sequence="0"
+                sequence="100"
                 groups="base.group_system"/>
         <menuitem
                 id="menu_odooai_cloud_config"
                 parent="menu_app_group"
                 sequence="1"
                 action="app_common.action_odooai_cloud_config"
-                groups="base.group_system"/>
+                groups="base.group_no_one"/>
         <menuitem
                 id="menu_ir_cron"
                 name="Scheduled Actions"
@@ -82,7 +82,7 @@
                 parent="menu_app_group"
                 sequence="92"
                 action="action_ir_module_addons_path"
-                groups="base.group_system"/>
+                groups="base.group_no_one"/>
 
         <!--增加导入Demo数据-->
         <menuitem
@@ -90,7 +90,7 @@
                 parent="menu_app_group"
                 sequence="93"
                 action="base.demo_force_install_action"
-                groups="base.group_system"/>
+                groups="base.group_no_one"/>
         <menuitem
                 id="menu_ir_config_list"
                 name="System Parameters"
@@ -120,12 +120,12 @@
             id="menu_ir_module_category_list"
             parent="base.menu_apps"
             sequence="30"
-            groups="base.group_system"
+            groups="base.group_no_one"
             action="action_ir_module_category_list"/>
         <menuitem id="menu_ir_module_category_list_user"
                   action="action_ir_module_category_list"
                   parent="base.menu_users"
-                  groups="base.group_system"
+                  groups="base.group_no_one"
                   sequence="9"/>
 
     </data>

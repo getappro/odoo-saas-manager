@@ -8,10 +8,10 @@
     </template>
     <!--    end-->
     <template id="replace_login" name="Login Layout" inherit_id="web.login_layout">
-        <xpath expr="//a[@target='_blank']" position="replace">
-            <a href="https://www.deepcode.ma" target="_blank">Powered by
-                <span>DeepCode.ma</span>
-            </a>
+        <xpath expr="//div[@class='text-center small mt-4 pt-3 border-top']" position="replace">
+            <div class="text-center small mt-4 pt-3 border-top" t-if="not disable_footer">
+               <a href="https://www.deepcode.ma" target="_blank">Powered by <span>DeepCode</span></a>
+            </div>
         </xpath>
     </template>
     <template id="replace_copyright_name" name="Copyright Name" inherit_id="web.frontend_layout">
