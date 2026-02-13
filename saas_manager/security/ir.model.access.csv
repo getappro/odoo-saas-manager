@@ -14,3 +14,6 @@ access_saas_instance_admin,saas.instance.admin,model_saas_instance,group_saas_ad
 access_saas_subscription_user,saas.subscription.user,model_saas_subscription,group_saas_user,1,0,0,0
 access_saas_subscription_manager,saas.subscription.manager,model_saas_subscription,group_saas_manager,1,1,1,1
 access_saas_subscription_admin,saas.subscription.admin,model_saas_subscription,group_saas_admin,1,1,1,1
+access_saas_instance_stage_user_base,saas.instance.stage.user.base,model_saas_instance_stage,base.group_user,1,0,0,0
+access_saas_instance_stage_manager,saas.instance.stage.manager,model_saas_instance_stage,group_saas_manager,1,1,1,0
+access_saas_instance_stage_admin,saas.instance.stage.admin,model_saas_instance_stage,group_saas_admin,1,1,1,1

@@ -51,7 +51,8 @@
         'data/saas_server_data.xml',
         'data/saas_template_data.xml',
         'data/saas_plan_data.xml',
-        
+        'data/saas_instance_stage_data.xml',
+
         # Automation
         'data/ir_cron_data.xml',
         'data/mail_template_data.xml',

@@ -44,8 +44,9 @@
                                 confirm="Are you sure you want to terminate this instance? This action is irreversible."
                                 groups="saas_manager.group_saas_admin"
                                 invisible="state in ['terminated', 'draft']"/>
-                        <field name="state" widget="statusbar" 
-                               statusbar_visible="draft,provisioning,active"/>
+                        <field name="stage_id" widget="statusbar"
+                               statusbar_visible="draft,provisioning,active,suspended,expired,terminated"/>
+
                     </header>
                     <sheet>
                         <div class="oe_button_box" name="button_box">
@@ -136,6 +137,7 @@
                     <field name="template_id"/>
                     <field name="plan_id"/>
                     <field name="server_id"/>
+                    <field name="stage_id" optional="show"/>
                     <field name="current_users" optional="show"/>
                     <field name="user_limit" optional="show"/>
                     <field name="users_percentage" widget="percentage" optional="show"/>
@@ -158,12 +160,13 @@
             <field name="name">saas.instance.kanban</field>
             <field name="model">saas.instance</field>
             <field name="arch" type="xml">
-                <kanban string="SaaS Instances" default_group_by="state" sample="1" class="o_kanban_mobile">
+                <kanban string="SaaS Instances" default_group_by="stage_id" group_create="1" sample="1" class="o_kanban_mobile">
                     <field name="id"/>
                     <field name="name"/>
                     <field name="partner_id"/>
                     <field name="domain"/>
                     <field name="state"/>
+                    <field name="stage_id"/>
                     <field name="color"/>
                     <field name="template_id"/>
                     <field name="plan_id"/>
@@ -185,7 +188,7 @@
                                         record.state.raw_value == 'expired' ? 'text-bg-danger' :
                                         'text-bg-secondary'
                                     ">
-                                        <field name="state"/>
+                                        <field name="stage_id"/>
                                     </span>
                                 </div>
                                 <div class="mt-2">
@@ -226,6 +229,7 @@
                         <filter string="Customer" name="group_partner" context="{'group_by': 'partner_id'}"/>
                         <filter string="Template" name="group_template" context="{'group_by': 'template_id'}"/>
                         <filter string="Plan" name="group_plan" context="{'group_by': 'plan_id'}"/>
+                        <filter string="Stage" name="group_stage" context="{'group_by': 'stage_id'}"/>
                         <filter string="State" name="group_state" context="{'group_by': 'state'}"/>
                         <filter string="Activation Month" name="group_activation_month" context="{'group_by': 'activation_date:month'}"/>
                     </group>

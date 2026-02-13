@@ -108,7 +108,17 @@ class SaaSInstance(models.Model):
         ('expired', 'Expired'),
         ('terminated', 'Terminated'),
     ], string='State', default='draft', required=True, tracking=True)
-    
+    stage_id = fields.Many2one(
+        'saas.instance.stage',
+        string='Stage',
+        tracking=True,
+        ondelete='restrict',
+        # default intentionally not set to avoid queries during module init
+        group_expand='_read_group_stage_ids',
+        domain=[('active', '=', True)],
+        index=True,
+    )
+
     admin_login = fields.Char(
         string='Admin Login',
         tracking=True,
@@ -222,6 +232,34 @@ class SaaSInstance(models.Model):
         except UserError:
             # If no server with 10% capacity, try to get any active server
             return Server.search([('state', '=', 'active')], limit=1)
+
+    @api.model
+    def _stage_for_state(self, state):
+        Stage = self.env['saas.instance.stage']
+        try:
+            if hasattr(Stage, '_table_exists') and not Stage._table_exists():
+                return Stage.browse()
+            return Stage.search([('state', '=', state)], order='sequence, id', limit=1)
+        except Exception:
+            return Stage.browse()
+
+    @api.model
+    def _default_stage_id(self):
+        Stage = self.env['saas.instance.stage']
+        try:
+            if hasattr(Stage, '_table_exists') and not Stage._table_exists():
+                return False
+            stage = self._stage_for_state('draft')
+            if not stage:
+                stage = Stage.search([], order='sequence, id', limit=1)
+            return stage.id
+        except Exception:
+            return False
+
+    @api.model
+    def _read_group_stage_ids(self, stages, domain, order=None):
+        order = order or 'sequence, id'
+        return stages.search([], order=order)
 
     @api.depends('plan_id', 'plan_id.user_limit')
     def _compute_user_limit(self):
@@ -1466,12 +1504,44 @@ class SaaSInstance(models.Model):
         Returns:
             SaaSInstance: The created instances
         """
-        # Si partner_id n'est pas fourni, utiliser le partenaire de l'utilisateur actuel
+        Stage = self.env['saas.instance.stage']
         for vals in vals_list:
             if not vals.get('partner_id') and self.env.user.partner_id:
                 vals['partner_id'] = self.env.user.partner_id.id
+            if not vals.get('stage_id'):
+                if vals.get('state'):
+                    stage = self._stage_for_state(vals['state'])
+                    if stage:
+                        vals['stage_id'] = stage.id
+                else:
+                    default_stage_id = self._default_stage_id()
+                    if default_stage_id:
+                        vals['stage_id'] = default_stage_id
+            if vals.get('stage_id') and not vals.get('state'):
+                stage = Stage.browse(vals['stage_id'])
+                if stage:
+                    vals['state'] = stage.state
 
         return super().create(vals_list)
+
+    def write(self, vals):
+        if self.env.context.get('stage_sync_skip'):
+            return super().write(vals)
+
+        if 'stage_id' in vals and 'state' not in vals:
+            stage = self.env['saas.instance.stage'].browse(vals['stage_id'])
+            if stage:
+                vals['state'] = stage.state
+
+        res = super().write(vals)
+
+        if 'state' in vals and 'stage_id' not in vals:
+            for record in self:
+                stage = record._stage_for_state(record.state)
+                if stage and record.stage_id != stage:
+                    record.with_context(stage_sync_skip=True).write({'stage_id': stage.id})
+
+        return res
 
     def _parse_agent_response(self, response):
         data = response.json()
