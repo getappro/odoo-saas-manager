@@ -1,0 +1,366 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* zehntech_captcha_for_odoo
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-17 12:16+0000\n"
+"PO-Revision-Date: 2025-11-17 17:56+0530\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: ja_JP\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Poedit 3.7\n"
+
+#. module: zehntech_captcha_for_odoo
+#: model:ir.model.fields.selection,name:zehntech_captcha_for_odoo.selection__website__rhs_digit_length__0-9
+msgid "0-9"
+msgstr "0-9"
+
+#. module: zehntech_captcha_for_odoo
+#: model:ir.model.fields.selection,name:zehntech_captcha_for_odoo.selection__website__rhs_digit_length__0-99
+msgid "0-99"
+msgstr "0～99"
+
+#. module: zehntech_captcha_for_odoo
+#: model:ir.model.fields.selection,name:zehntech_captcha_for_odoo.selection__captcha_config_wizard__math_rhs_len__9
+#: model:ir.model.fields.selection,name:zehntech_captcha_for_odoo.selection__res_config_settings__math_rhs_len__9
+msgid "0–9"
+msgstr "0-9"
+
+#. module: zehntech_captcha_for_odoo
+#: model:ir.model.fields.selection,name:zehntech_captcha_for_odoo.selection__captcha_config_wizard__math_rhs_len__99
+#: model:ir.model.fields.selection,name:zehntech_captcha_for_odoo.selection__res_config_settings__math_rhs_len__99
+msgid "0–99"
+msgstr "0～99"
+
+#. module: zehntech_captcha_for_odoo
+#: model_terms:ir.ui.view,arch_db:zehntech_captcha_for_odoo.website_form_captcha_options
+msgid "Add Captcha"
+msgstr "キャプチャを追加する"
+
+#. module: zehntech_captcha_for_odoo
+#: model_terms:ir.ui.view,arch_db:zehntech_captcha_for_odoo.website_form_captcha_options
+msgid "Add captcha verification to this form"
+msgstr "このフォームにキャプチャ認証を追加する"
+
+#. module: zehntech_captcha_for_odoo
+#: model:ir.model.fields.selection,name:zehntech_captcha_for_odoo.selection__captcha_config_wizard__math_operation__add
+#: model:ir.model.fields.selection,name:zehntech_captcha_for_odoo.selection__res_config_settings__math_operation__add
+#: model:ir.model.fields.selection,name:zehntech_captcha_for_odoo.selection__website__algebraic_operations__addition
+msgid "Addition"
+msgstr "追加"
+
+#. module: zehntech_captcha_for_odoo
+#: model:ir.model.fields,field_description:zehntech_captcha_for_odoo.field_captcha_config_wizard__math_operation
+#: model:ir.model.fields,field_description:zehntech_captcha_for_odoo.field_res_config_settings__math_operation
+msgid "Algebraic Operation"
+msgstr "代数演算"
+
+#. module: zehntech_captcha_for_odoo
+#: model:ir.model.fields,field_description:zehntech_captcha_for_odoo.field_website__algebraic_operations
+msgid "Algebraic Operations"
+msgstr "代数演算"
+
+#. module: zehntech_captcha_for_odoo
+#: model:ir.model.fields.selection,name:zehntech_captcha_for_odoo.selection__captcha_config_wizard__captcha_type__alpha
+#: model:ir.model.fields.selection,name:zehntech_captcha_for_odoo.selection__res_config_settings__captcha_type__alpha
+#: model:ir.model.fields.selection,name:zehntech_captcha_for_odoo.selection__website__captcha_type__alphabetic_image
+#: model_terms:ir.ui.view,arch_db:zehntech_captcha_for_odoo.website_form_captcha_field_options
+msgid "Alphabetic Image"
+msgstr "アルファベットの画像"
+
+#. module: zehntech_captcha_for_odoo
+#: model_terms:ir.ui.view,arch_db:zehntech_captcha_for_odoo.view_website_captcha_res_config
+msgid "Alphabetic Image Settings"
+msgstr "アルファベット画像設定"
+
+#. module: zehntech_captcha_for_odoo
+#: model_terms:ir.ui.view,arch_db:zehntech_captcha_for_odoo.view_website_captcha_res_config
+msgid "Apply To Forms"
+msgstr "フォームに適用"
+
+#. module: zehntech_captcha_for_odoo
+#: model_terms:ir.ui.view,arch_db:zehntech_captcha_for_odoo.view_website_captcha_res_config
+msgid "Captcha"
+msgstr "キャプチャ"
+
+#. module: zehntech_captcha_for_odoo
+#. odoo-javascript
+#: code:addons/zehntech_captcha_for_odoo/static/src/js/captcha_editor.js:0
+msgid "Captcha (This Website)"
+msgstr "キャプチャ（このウェブサイト）"
+
+#. module: zehntech_captcha_for_odoo
+#: model:ir.model,name:zehntech_captcha_for_odoo.model_captcha_config_wizard
+msgid "Captcha Configuration Wizard"
+msgstr "キャプチャ設定ウィザード"
+
+#. module: zehntech_captcha_for_odoo
+#: model:ir.model.fields,field_description:zehntech_captcha_for_odoo.field_website__captcha_length
+msgid "Captcha Length"
+msgstr "キャプチャの長さ"
+
+#. module: zehntech_captcha_for_odoo
+#: model:ir.model.fields,field_description:zehntech_captcha_for_odoo.field_captcha_config_wizard__alpha_length
+#: model:ir.model.fields,field_description:zehntech_captcha_for_odoo.field_res_config_settings__alpha_length
+msgid "Captcha Length (Alphabetic)"
+msgstr "キャプチャの長さ（アルファベット）"
+
+#. module: zehntech_captcha_for_odoo
+#: model:ir.model.fields,field_description:zehntech_captcha_for_odoo.field_captcha_config_wizard__num_length
+#: model:ir.model.fields,field_description:zehntech_captcha_for_odoo.field_res_config_settings__num_length
+msgid "Captcha Length (Numbers)"
+msgstr "キャプチャの長さ（数字）"
+
+#. module: zehntech_captcha_for_odoo
+#: model:ir.model.fields,field_description:zehntech_captcha_for_odoo.field_res_config_settings__captcha_preview_image
+msgid "Captcha Preview Image"
+msgstr "キャプチャプレビュー画像"
+
+#. module: zehntech_captcha_for_odoo
+#: model:ir.model.fields,field_description:zehntech_captcha_for_odoo.field_res_config_settings__captcha_preview_nonce
+msgid "Captcha Preview Nonce"
+msgstr "キャプチャプレビューナンス"
+
+#. module: zehntech_captcha_for_odoo
+#: model:ir.model.fields,field_description:zehntech_captcha_for_odoo.field_res_config_settings__captcha_preview_text
+msgid "Captcha Preview Text"
+msgstr "キャプチャプレビューテキスト"
+
+#. module: zehntech_captcha_for_odoo
+#: model:ir.model.fields,field_description:zehntech_captcha_for_odoo.field_captcha_config_wizard__captcha_type
+#: model:ir.model.fields,field_description:zehntech_captcha_for_odoo.field_res_config_settings__captcha_type
+#: model:ir.model.fields,field_description:zehntech_captcha_for_odoo.field_website__captcha_type
+#: model_terms:ir.ui.view,arch_db:zehntech_captcha_for_odoo.view_website_captcha_res_config
+#: model_terms:ir.ui.view,arch_db:zehntech_captcha_for_odoo.website_form_captcha_field_options
+msgid "Captcha Type"
+msgstr "キャプチャの種類"
+
+#. module: zehntech_captcha_for_odoo
+#. odoo-javascript
+#: code:addons/zehntech_captcha_for_odoo/static/src/js/captcha_editor.js:0
+msgid "Captcha settings saved for this website."
+msgstr "このウェブサイトのキャプチャ設定が保存されました。"
+
+#. module: zehntech_captcha_for_odoo
+#: model:ir.model,name:zehntech_captcha_for_odoo.model_res_config_settings
+msgid "Config Settings"
+msgstr "コンフィグ設定"
+
+#. module: zehntech_captcha_for_odoo
+#. odoo-javascript
+#: code:addons/zehntech_captcha_for_odoo/static/src/js/captcha_editor.js:0
+msgid "Could not save captcha settings."
+msgstr "キャプチャ設定を保存できませんでした。"
+
+#. module: zehntech_captcha_for_odoo
+#: model:ir.model.fields,field_description:zehntech_captcha_for_odoo.field_captcha_config_wizard__create_uid
+msgid "Created by"
+msgstr "作成者"
+
+#. module: zehntech_captcha_for_odoo
+#: model:ir.model.fields,field_description:zehntech_captcha_for_odoo.field_captcha_config_wizard__create_date
+msgid "Created on"
+msgstr "作成日"
+
+#. module: zehntech_captcha_for_odoo
+#: model:ir.model.fields,field_description:zehntech_captcha_for_odoo.field_captcha_config_wizard__display_name
+msgid "Display Name"
+msgstr "表示名"
+
+#. module: zehntech_captcha_for_odoo
+#: model:ir.model.fields,field_description:zehntech_captcha_for_odoo.field_res_config_settings__captcha_enabled
+#: model:ir.model.fields,field_description:zehntech_captcha_for_odoo.field_website__captcha_enabled
+#: model_terms:ir.ui.view,arch_db:zehntech_captcha_for_odoo.website_form_captcha_options
+msgid "Enable Captcha"
+msgstr "キャプチャを有効にする"
+
+#. module: zehntech_captcha_for_odoo
+#: model_terms:ir.ui.view,arch_db:zehntech_captcha_for_odoo.captcha_block
+msgid "Enter captcha"
+msgstr "キャプチャを入力してください"
+
+#. module: zehntech_captcha_for_odoo
+#: model:ir.model.fields,field_description:zehntech_captcha_for_odoo.field_captcha_config_wizard__id
+msgid "ID"
+msgstr "ID"
+
+#. module: zehntech_captcha_for_odoo
+#: model:ir.model.fields,field_description:zehntech_captcha_for_odoo.field_captcha_config_wizard__alpha_include_caps
+#: model:ir.model.fields,field_description:zehntech_captcha_for_odoo.field_res_config_settings__alpha_include_caps
+#: model:ir.model.fields,field_description:zehntech_captcha_for_odoo.field_website__include_capital
+msgid "Include Capital Letters"
+msgstr "大文字を含める"
+
+#. module: zehntech_captcha_for_odoo
+#: model:ir.model.fields,field_description:zehntech_captcha_for_odoo.field_captcha_config_wizard__alpha_include_symbols
+#: model:ir.model.fields,field_description:zehntech_captcha_for_odoo.field_res_config_settings__alpha_include_symbols
+#: model:ir.model.fields,field_description:zehntech_captcha_for_odoo.field_website__include_symbols
+msgid "Include Symbols"
+msgstr "記号を含める"
+
+#. module: zehntech_captcha_for_odoo
+#: model:ir.model.fields,field_description:zehntech_captcha_for_odoo.field_captcha_config_wizard__num_include_symbols
+#: model:ir.model.fields,field_description:zehntech_captcha_for_odoo.field_res_config_settings__num_include_symbols
+msgid "Include Symbols (!@#$%^&=)"
+msgstr "記号を含める (!@#$%^&=)"
+
+#. module: zehntech_captcha_for_odoo
+#: model:ir.model.fields,field_description:zehntech_captcha_for_odoo.field_captcha_config_wizard__write_uid
+msgid "Last Updated by"
+msgstr "最終更新者"
+
+#. module: zehntech_captcha_for_odoo
+#: model:ir.model.fields,field_description:zehntech_captcha_for_odoo.field_captcha_config_wizard__write_date
+msgid "Last Updated on"
+msgstr "最終更新日"
+
+#. module: zehntech_captcha_for_odoo
+#: model:ir.model.fields,field_description:zehntech_captcha_for_odoo.field_res_config_settings__captcha_on_login
+msgid "Login Form"
+msgstr "ログインフォーム"
+
+#. module: zehntech_captcha_for_odoo
+#: model:ir.model.fields.selection,name:zehntech_captcha_for_odoo.selection__captcha_config_wizard__captcha_type__math
+#: model:ir.model.fields.selection,name:zehntech_captcha_for_odoo.selection__res_config_settings__captcha_type__math
+#: model:ir.model.fields.selection,name:zehntech_captcha_for_odoo.selection__website__captcha_type__mathematical
+#: model_terms:ir.ui.view,arch_db:zehntech_captcha_for_odoo.website_form_captcha_field_options
+msgid "Mathematical"
+msgstr "数学的"
+
+#. module: zehntech_captcha_for_odoo
+#: model_terms:ir.ui.view,arch_db:zehntech_captcha_for_odoo.view_website_captcha_res_config
+msgid "Mathematical Captcha Settings"
+msgstr "数学キャプチャ設定"
+
+#. module: zehntech_captcha_for_odoo
+#: model:ir.model.fields.selection,name:zehntech_captcha_for_odoo.selection__captcha_config_wizard__math_operation__mul
+#: model:ir.model.fields.selection,name:zehntech_captcha_for_odoo.selection__res_config_settings__math_operation__mul
+#: model:ir.model.fields.selection,name:zehntech_captcha_for_odoo.selection__website__algebraic_operations__multiplication
+msgid "Multiplication"
+msgstr "乗算"
+
+#. module: zehntech_captcha_for_odoo
+#: model:ir.model.fields,help:zehntech_captcha_for_odoo.field_res_config_settings__captcha_preview_nonce
+msgid "Nonce to force recompute when refresh button is clicked"
+msgstr "更新ボタンがクリックされたときに強制的に再計算するノンス"
+
+#. module: zehntech_captcha_for_odoo
+#: model:ir.model.fields,field_description:zehntech_captcha_for_odoo.field_res_config_settings__captcha_not_verified_message
+msgid "Not Verified Message"
+msgstr "未確認メッセージ"
+
+#. module: zehntech_captcha_for_odoo
+#: model:ir.model.fields.selection,name:zehntech_captcha_for_odoo.selection__captcha_config_wizard__captcha_type__num
+#: model:ir.model.fields.selection,name:zehntech_captcha_for_odoo.selection__res_config_settings__captcha_type__num
+#: model:ir.model.fields.selection,name:zehntech_captcha_for_odoo.selection__website__captcha_type__numeric_image
+msgid "Numbers Image"
+msgstr "数字の画像"
+
+#. module: zehntech_captcha_for_odoo
+#: model_terms:ir.ui.view,arch_db:zehntech_captcha_for_odoo.view_website_captcha_res_config
+msgid "Numbers Image Settings"
+msgstr "数字の画像設定"
+
+#. module: zehntech_captcha_for_odoo
+#: model_terms:ir.ui.view,arch_db:zehntech_captcha_for_odoo.website_form_captcha_field_options
+msgid "Numeric Image"
+msgstr "数値画像"
+
+#. module: zehntech_captcha_for_odoo
+#: model:ir.model.fields,field_description:zehntech_captcha_for_odoo.field_res_config_settings__captcha_on_reset
+msgid "Password Reset Form"
+msgstr "パスワードリセットフォーム"
+
+#. module: zehntech_captcha_for_odoo
+#: model_terms:ir.ui.view,arch_db:zehntech_captcha_for_odoo.view_website_captcha_res_config
+msgid "Preview"
+msgstr "プレビュー"
+
+#. module: zehntech_captcha_for_odoo
+#: model_terms:ir.ui.view,arch_db:zehntech_captcha_for_odoo.view_website_captcha_res_config
+msgid "Preview Image"
+msgstr "プレビュー画像"
+
+#. module: zehntech_captcha_for_odoo
+#: model_terms:ir.ui.view,arch_db:zehntech_captcha_for_odoo.view_website_captcha_res_config
+msgid "Preview Text"
+msgstr "テキストのプレビュー"
+
+#. module: zehntech_captcha_for_odoo
+#: model_terms:ir.ui.view,arch_db:zehntech_captcha_for_odoo.view_website_captcha_res_config
+msgid "Preview Text (matches image below)"
+msgstr "プレビューテキスト（下の画像と一致）"
+
+#. module: zehntech_captcha_for_odoo
+#: model:ir.model.fields,help:zehntech_captcha_for_odoo.field_res_config_settings__captcha_preview_image
+msgid "Preview image that matches the preview text"
+msgstr "プレビューテキストに一致するプレビュー画像"
+
+#. module: zehntech_captcha_for_odoo
+#: model:ir.model.fields,help:zehntech_captcha_for_odoo.field_res_config_settings__captcha_preview_text
+msgid "Preview text that matches the preview image"
+msgstr "プレビュー画像に一致するプレビューテキスト"
+
+#. module: zehntech_captcha_for_odoo
+#: model:ir.model.fields,field_description:zehntech_captcha_for_odoo.field_captcha_config_wizard__math_rhs_len
+#: model:ir.model.fields,field_description:zehntech_captcha_for_odoo.field_res_config_settings__math_rhs_len
+#: model:ir.model.fields,field_description:zehntech_captcha_for_odoo.field_website__rhs_digit_length
+msgid "RHS Digit Length"
+msgstr "RHS 桁の長さ"
+
+#. module: zehntech_captcha_for_odoo
+#: model:ir.model.fields.selection,name:zehntech_captcha_for_odoo.selection__captcha_config_wizard__math_operation__rnd
+#: model:ir.model.fields.selection,name:zehntech_captcha_for_odoo.selection__res_config_settings__math_operation__rnd
+#: model:ir.model.fields.selection,name:zehntech_captcha_for_odoo.selection__website__algebraic_operations__random
+msgid "Random"
+msgstr "Random"
+
+#. module: zehntech_captcha_for_odoo
+#: model_terms:ir.ui.view,arch_db:zehntech_captcha_for_odoo.view_website_captcha_res_config
+msgid "Refresh Preview"
+msgstr "プレビューを更新"
+
+#. module: zehntech_captcha_for_odoo
+#: model_terms:ir.ui.view,arch_db:zehntech_captcha_for_odoo.captcha_block
+msgid "Refresh captcha"
+msgstr "キャプチャを更新"
+
+#. module: zehntech_captcha_for_odoo
+#: model_terms:ir.ui.view,arch_db:zehntech_captcha_for_odoo.website_form_captcha_options
+msgid "Remove Captcha"
+msgstr "キャプチャを削除する"
+
+#. module: zehntech_captcha_for_odoo
+#: model_terms:ir.ui.view,arch_db:zehntech_captcha_for_odoo.website_form_captcha_options
+msgid "Remove captcha from this form"
+msgstr "このフォームからキャプチャを削除してください"
+
+#. module: zehntech_captcha_for_odoo
+#: model:ir.model.fields,field_description:zehntech_captcha_for_odoo.field_res_config_settings__captcha_on_signup
+msgid "Signup Form"
+msgstr "サインアップフォーム"
+
+#. module: zehntech_captcha_for_odoo
+#: model:ir.model.fields.selection,name:zehntech_captcha_for_odoo.selection__captcha_config_wizard__math_operation__sub
+#: model:ir.model.fields.selection,name:zehntech_captcha_for_odoo.selection__res_config_settings__math_operation__sub
+#: model:ir.model.fields.selection,name:zehntech_captcha_for_odoo.selection__website__algebraic_operations__subtraction
+msgid "Subtraction"
+msgstr "引き算"
+
+#. module: zehntech_captcha_for_odoo
+#: model:ir.model,name:zehntech_captcha_for_odoo.model_website
+#: model:ir.model.fields,field_description:zehntech_captcha_for_odoo.field_res_config_settings__website_id
+msgid "Website"
+msgstr "ウェブサイト"
+
+#. module: zehntech_captcha_for_odoo
+#: model_terms:ir.ui.view,arch_db:zehntech_captcha_for_odoo.captcha_block
+msgid "captcha"
+msgstr "キャプチャ"

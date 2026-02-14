@@ -1,0 +1,250 @@
+<odoo>
+  <template id="captcha_snippet" inherit_id="website.layout">
+    <xpath expr="//head" position="inside">
+      <script type="text/javascript">
+        (function () {
+        "use strict";
+        
+        window.__CAPTCHA_BOOTSTRAP__ = true;
+        
+        function jsonRpc(url, params) {
+        return fetch(url, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({jsonrpc: "2.0", method: "call", params: params || {}, id: Date.now()}),
+        credentials: "same-origin"
+        }).then(r => r.json()).then(j => j.result || {}).catch(() => ({}));
+        }
+        
+        function getFormContext(container){
+        const form = container.closest('form');
+        if (!form) return {};
+        return {
+        type: form.getAttribute('data-captcha-type') || null,
+        len:  form.getAttribute('data-captcha-len') || null,
+        symbols: form.getAttribute('data-captcha-symbols') === '1' ? true : null,
+        caps: form.getAttribute('data-captcha-caps') === '1' ? true : null,
+        op: form.getAttribute('data-captcha-op') || null,
+        rhs: form.getAttribute('data-captcha-rhs') || null,
+        };
+        }
+        
+        function attachCaptcha(container, force=false) {
+        // prevent concurrent duplicate calls
+        if (container.dataset.captchaBusy === '1') return;
+        // if already initialized and not forced (e.g., first mount), skip
+        if (!force &amp;&amp; container.dataset.captchaInit === '1') return;
+        
+        container.dataset.captchaBusy = '1';
+        container.dataset.captchaInit = '1';
+        
+        // request sequence guard: drop late responses
+        const seq = (parseInt(container.dataset.captchaSeq || '0', 10) + 1).toString();
+        container.dataset.captchaSeq = seq;
+        
+        const ctx = getFormContext(container);
+        jsonRpc("/captcha/new", {form_context: ctx}).then(function (data) {
+        // if another newer request happened, ignore this response
+        if (container.dataset.captchaSeq !== seq) return;
+        
+        if (!data || !data.enabled) {
+        try { container.style.display = 'none'; } catch(e) {}
+        return;
+        }
+        try { container.style.display = ''; } catch(e) {}
+        
+        const img = container.querySelector("img[data-captcha-img]");
+        const tokenInput = container.querySelector('input[name="captcha_token"]');
+        const promptNode = container.querySelector("[data-captcha-prompt]");
+        
+        if (tokenInput) tokenInput.value = data.token;
+        
+        if (data.prompt) {
+        if (promptNode) promptNode.textContent = data.prompt || "";
+        if (img) img.style.display = "none";
+        return;
+        }
+        
+        if (promptNode) promptNode.textContent = "";
+        if (img) {
+        img.style.display = "inline-block";
+        const sep = data.image.indexOf("?") === -1 ? "?" : "&amp;";
+        const url = data.image + sep + "_=" + Date.now();
+        img.setAttribute("src", url);
+        // bind the token with this seq for extra safety
+        container.dataset.captchaToken = data.token;
+        }
+        }).finally(function(){
+        container.dataset.captchaBusy = '0';
+        });
+        }
+        
+        function bindAll() {
+        document.querySelectorAll("[data-captcha-container]").forEach(function (el) {
+        // mount once
+        if (el.dataset.captchaInit === '1') return;
+        // initial attach
+        attachCaptcha(el, /*force*/ true);
+        const refresh = el.querySelector("[data-captcha-refresh]");
+        if (refresh &amp;&amp; !refresh.dataset.captchaRefreshBound) {
+        refresh.dataset.captchaRefreshBound = '1';
+        refresh.addEventListener("click", function (ev) {
+        ev.preventDefault();
+        // on refresh we force a new request
+        attachCaptcha(el, /*force*/ true);
+        });
+        }
+        });
+        }
+        
+        function showCaptchaErrorIfAny(){
+        const params = new URLSearchParams(window.location.search || '');
+        if (!params.get('captcha_error')) return;
+        document.querySelectorAll('[data-captcha-container]').forEach(function (el){
+        var msg = (window.ODOO_CAPTCHA_MSG || "Captcha not verified.");
+        var div = document.createElement('div');
+        div.className = 'alert alert-danger mt-2';
+        div.setAttribute('role','alert');
+        div.textContent = msg;
+        el.parentNode.insertBefore(div, el);
+        });
+        }
+        
+        function initAll() {
+        bindAll();
+        showCaptchaErrorIfAny();
+        }
+        
+        if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", initAll);
+        } else {
+        initAll();
+        }
+        })();
+      </script>
+    </xpath>
+  </template>
+  
+  <template id="captcha_login_inherit" inherit_id="web.login">
+    <!-- <xpath expr="//form" position="inside"> -->
+    <xpath expr="//form//button[@type='submit'] | //form//input[@type='submit']" position="before">
+      <t t-if="request.env['res.config.settings'].sudo().get_site_config(request.website).enabled and request.env['res.config.settings'].sudo().get_site_config(request.website).on_login">
+        <t t-call="zehntech_captcha_for_odoo.captcha_block"/>
+      </t>
+    </xpath>
+  </template>
+  
+  <template id="captcha_signup_inherit" inherit_id="auth_signup.signup">
+    <!-- <xpath expr="//form" position="inside"> -->
+    <xpath expr="//form//button[@type='submit'] | //form//input[@type='submit']" position="before">
+      <t t-if="request.env['res.config.settings'].sudo().get_site_config(request.website).enabled and request.env['res.config.settings'].sudo().get_site_config(request.website).on_signup">
+        <t t-call="zehntech_captcha_for_odoo.captcha_block"/>
+      </t>
+    </xpath>
+  </template>
+  
+  <template id="captcha_reset_inherit" inherit_id="auth_signup.reset_password">
+    <!-- <xpath expr="//form" position="inside"> -->
+    <xpath expr="//form//button[@type='submit'] | //form//input[@type='submit']" position="before">
+      <t t-if="request.env['res.config.settings'].sudo().get_site_config(request.website).enabled and request.env['res.config.settings'].sudo().get_site_config(request.website).on_reset">
+        <t t-call="zehntech_captcha_for_odoo.captcha_block"/>
+      </t>
+    </xpath>
+  </template>
+  
+  <template id="captcha_block">
+    <div data-captcha-container="1" class="o_we_captcha mb-3">
+      <t t-if="True">
+        <script>window.ODOO_CAPTCHA_MSG = "<t t-esc="request.env['ir.config_parameter'].sudo().get_param('website_captcha.%s.message' % (request.website.id), default='Captcha not verified.')"/>";</script>
+      </t>
+      
+      <div class="d-flex align-items-center mb-2">
+        <div data-captcha-prompt="" class="me-2" style="font-weight:600;"></div>
+        <img data-captcha-img="1" alt="captcha" width="180" height="56"/>
+        <a href="#" data-captcha-refresh="1" class="ms-2" aria-label="Refresh captcha">↻</a>
+      </div>
+      <input type="hidden" name="captcha_token"/>
+      <div class="mb-2">
+        <input type="text" class="form-control" name="captcha_value" placeholder="Enter captcha"/>
+      </div>
+      <script type="text/javascript">
+        (function(){
+        // If global head bootstrap already initialized, skip inline attach
+        if (window.__CAPTCHA_BOOTSTRAP__) {
+        return;
+        }
+        
+        var container = document.currentScript.parentNode;
+        
+        function jsonRpc(url, params){
+        return fetch(url, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({jsonrpc: "2.0", method: "call", params: params || {}, id: Date.now()}),
+        credentials: "same-origin"
+        }).then(function(r){ return r.json(); }).then(function(j){ return j.result || {}; }).catch(function(){ return {}; });
+        }
+        
+        function getFormContext(container){
+        var form = container.closest('form');
+        if (!form) return {};
+        return {
+        type: form.getAttribute('data-captcha-type') || null,
+        len:  form.getAttribute('data-captcha-len') || null,
+        symbols: form.getAttribute('data-captcha-symbols') === '1' ? true : null,
+        caps: form.getAttribute('data-captcha-caps') === '1' ? true : null,
+        op: form.getAttribute('data-captcha-op') || null,
+        rhs: form.getAttribute('data-captcha-rhs') || null,
+        };
+        }
+        
+        function attach(){
+        // prevent double mount
+        if (container.dataset.captchaInit === '1') return;
+        container.dataset.captchaInit = '1';
+        
+        // request sequence guard
+        var seq = (parseInt(container.dataset.captchaSeq || '0', 10) + 1).toString();
+        container.dataset.captchaSeq = seq;
+        
+        jsonRpc("/captcha/new", {form_context: getFormContext(container)}).then(function(data){
+        if (container.dataset.captchaSeq !== seq) return;
+        
+        if(!data || !data.enabled){
+        try { container.style.display = 'none'; } catch(e){}
+        return;
+        }
+        try { container.style.display = ''; } catch(e){}
+        
+        var img = container.querySelector("img[data-captcha-img]");
+        var tokenInput = container.querySelector('input[name="captcha_token"]');
+        var promptNode = container.querySelector("[data-captcha-prompt]");
+        
+        if (tokenInput) tokenInput.value = data.token;
+        
+        if (data.prompt) {
+        if (promptNode) promptNode.textContent = data.prompt || "";
+        if (img) img.style.display = "none";
+        return;
+        }
+        
+        if (promptNode) promptNode.textContent = "";
+        if (img) {
+        img.style.display = "inline-block";
+        var sep = data.image.indexOf("?") === -1 ? "?" : "&amp;";
+        img.setAttribute("src", data.image + sep + "_=" + Date.now());
+        }
+        });
+        }
+        
+        attach();
+        var r = container.querySelector('[data-captcha-refresh]');
+        if (r &amp;&amp; !r.dataset.captchaRefreshBound) {
+        r.dataset.captchaRefreshBound = '1';
+        r.addEventListener('click', function(e){ e.preventDefault(); container.dataset.captchaInit = '0'; attach(); });
+        }
+        })();
+      </script>
+    </div>
+  </template>
+</odoo>

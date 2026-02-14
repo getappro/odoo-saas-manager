@@ -1,0 +1,366 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* zehntech_captcha_for_odoo
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-17 12:04+0000\n"
+"PO-Revision-Date: 2025-11-17 17:45+0530\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 3.7\n"
+
+#. module: zehntech_captcha_for_odoo
+#: model:ir.model.fields.selection,name:zehntech_captcha_for_odoo.selection__website__rhs_digit_length__0-9
+msgid "0-9"
+msgstr "0-9"
+
+#. module: zehntech_captcha_for_odoo
+#: model:ir.model.fields.selection,name:zehntech_captcha_for_odoo.selection__website__rhs_digit_length__0-99
+msgid "0-99"
+msgstr "0-99"
+
+#. module: zehntech_captcha_for_odoo
+#: model:ir.model.fields.selection,name:zehntech_captcha_for_odoo.selection__captcha_config_wizard__math_rhs_len__9
+#: model:ir.model.fields.selection,name:zehntech_captcha_for_odoo.selection__res_config_settings__math_rhs_len__9
+msgid "0–9"
+msgstr "0-9"
+
+#. module: zehntech_captcha_for_odoo
+#: model:ir.model.fields.selection,name:zehntech_captcha_for_odoo.selection__captcha_config_wizard__math_rhs_len__99
+#: model:ir.model.fields.selection,name:zehntech_captcha_for_odoo.selection__res_config_settings__math_rhs_len__99
+msgid "0–99"
+msgstr "0-99"
+
+#. module: zehntech_captcha_for_odoo
+#: model_terms:ir.ui.view,arch_db:zehntech_captcha_for_odoo.website_form_captcha_options
+msgid "Add Captcha"
+msgstr "Captcha hinzufügen"
+
+#. module: zehntech_captcha_for_odoo
+#: model_terms:ir.ui.view,arch_db:zehntech_captcha_for_odoo.website_form_captcha_options
+msgid "Add captcha verification to this form"
+msgstr "Fügen Sie diesem Formular eine Captcha-Verifizierung hinzu."
+
+#. module: zehntech_captcha_for_odoo
+#: model:ir.model.fields.selection,name:zehntech_captcha_for_odoo.selection__captcha_config_wizard__math_operation__add
+#: model:ir.model.fields.selection,name:zehntech_captcha_for_odoo.selection__res_config_settings__math_operation__add
+#: model:ir.model.fields.selection,name:zehntech_captcha_for_odoo.selection__website__algebraic_operations__addition
+msgid "Addition"
+msgstr "Zusatz"
+
+#. module: zehntech_captcha_for_odoo
+#: model:ir.model.fields,field_description:zehntech_captcha_for_odoo.field_captcha_config_wizard__math_operation
+#: model:ir.model.fields,field_description:zehntech_captcha_for_odoo.field_res_config_settings__math_operation
+msgid "Algebraic Operation"
+msgstr "Algebraische Operation"
+
+#. module: zehntech_captcha_for_odoo
+#: model:ir.model.fields,field_description:zehntech_captcha_for_odoo.field_website__algebraic_operations
+msgid "Algebraic Operations"
+msgstr "Algebraische Operationen"
+
+#. module: zehntech_captcha_for_odoo
+#: model:ir.model.fields.selection,name:zehntech_captcha_for_odoo.selection__captcha_config_wizard__captcha_type__alpha
+#: model:ir.model.fields.selection,name:zehntech_captcha_for_odoo.selection__res_config_settings__captcha_type__alpha
+#: model:ir.model.fields.selection,name:zehntech_captcha_for_odoo.selection__website__captcha_type__alphabetic_image
+#: model_terms:ir.ui.view,arch_db:zehntech_captcha_for_odoo.website_form_captcha_field_options
+msgid "Alphabetic Image"
+msgstr "Alphabetisches Bild"
+
+#. module: zehntech_captcha_for_odoo
+#: model_terms:ir.ui.view,arch_db:zehntech_captcha_for_odoo.view_website_captcha_res_config
+msgid "Alphabetic Image Settings"
+msgstr "Alphabetische Bildeinstellungen"
+
+#. module: zehntech_captcha_for_odoo
+#: model_terms:ir.ui.view,arch_db:zehntech_captcha_for_odoo.view_website_captcha_res_config
+msgid "Apply To Forms"
+msgstr "Auf Formulare anwenden"
+
+#. module: zehntech_captcha_for_odoo
+#: model_terms:ir.ui.view,arch_db:zehntech_captcha_for_odoo.view_website_captcha_res_config
+msgid "Captcha"
+msgstr "Captcha"
+
+#. module: zehntech_captcha_for_odoo
+#. odoo-javascript
+#: code:addons/zehntech_captcha_for_odoo/static/src/js/captcha_editor.js:0
+msgid "Captcha (This Website)"
+msgstr "Captcha (Diese Website)"
+
+#. module: zehntech_captcha_for_odoo
+#: model:ir.model,name:zehntech_captcha_for_odoo.model_captcha_config_wizard
+msgid "Captcha Configuration Wizard"
+msgstr "Captcha-Konfigurationsassistent"
+
+#. module: zehntech_captcha_for_odoo
+#: model:ir.model.fields,field_description:zehntech_captcha_for_odoo.field_website__captcha_length
+msgid "Captcha Length"
+msgstr "Captcha-Länge"
+
+#. module: zehntech_captcha_for_odoo
+#: model:ir.model.fields,field_description:zehntech_captcha_for_odoo.field_captcha_config_wizard__alpha_length
+#: model:ir.model.fields,field_description:zehntech_captcha_for_odoo.field_res_config_settings__alpha_length
+msgid "Captcha Length (Alphabetic)"
+msgstr "Captcha-Länge (alphabetisch)"
+
+#. module: zehntech_captcha_for_odoo
+#: model:ir.model.fields,field_description:zehntech_captcha_for_odoo.field_captcha_config_wizard__num_length
+#: model:ir.model.fields,field_description:zehntech_captcha_for_odoo.field_res_config_settings__num_length
+msgid "Captcha Length (Numbers)"
+msgstr "Captcha-Länge (Zahlen)"
+
+#. module: zehntech_captcha_for_odoo
+#: model:ir.model.fields,field_description:zehntech_captcha_for_odoo.field_res_config_settings__captcha_preview_image
+msgid "Captcha Preview Image"
+msgstr "Captcha-Vorschaubild"
+
+#. module: zehntech_captcha_for_odoo
+#: model:ir.model.fields,field_description:zehntech_captcha_for_odoo.field_res_config_settings__captcha_preview_nonce
+msgid "Captcha Preview Nonce"
+msgstr "Captcha-Vorschau-Nonce"
+
+#. module: zehntech_captcha_for_odoo
+#: model:ir.model.fields,field_description:zehntech_captcha_for_odoo.field_res_config_settings__captcha_preview_text
+msgid "Captcha Preview Text"
+msgstr "Captcha-Vorschautext"
+
+#. module: zehntech_captcha_for_odoo
+#: model:ir.model.fields,field_description:zehntech_captcha_for_odoo.field_captcha_config_wizard__captcha_type
+#: model:ir.model.fields,field_description:zehntech_captcha_for_odoo.field_res_config_settings__captcha_type
+#: model:ir.model.fields,field_description:zehntech_captcha_for_odoo.field_website__captcha_type
+#: model_terms:ir.ui.view,arch_db:zehntech_captcha_for_odoo.view_website_captcha_res_config
+#: model_terms:ir.ui.view,arch_db:zehntech_captcha_for_odoo.website_form_captcha_field_options
+msgid "Captcha Type"
+msgstr "Captcha-Typ"
+
+#. module: zehntech_captcha_for_odoo
+#. odoo-javascript
+#: code:addons/zehntech_captcha_for_odoo/static/src/js/captcha_editor.js:0
+msgid "Captcha settings saved for this website."
+msgstr "Captcha-Einstellungen für diese Website gespeichert."
+
+#. module: zehntech_captcha_for_odoo
+#: model:ir.model,name:zehntech_captcha_for_odoo.model_res_config_settings
+msgid "Config Settings"
+msgstr "Konfigurationseinstellungen"
+
+#. module: zehntech_captcha_for_odoo
+#. odoo-javascript
+#: code:addons/zehntech_captcha_for_odoo/static/src/js/captcha_editor.js:0
+msgid "Could not save captcha settings."
+msgstr "Die Captcha-Einstellungen konnten nicht gespeichert werden."
+
+#. module: zehntech_captcha_for_odoo
+#: model:ir.model.fields,field_description:zehntech_captcha_for_odoo.field_captcha_config_wizard__create_uid
+msgid "Created by"
+msgstr "Erstellt von"
+
+#. module: zehntech_captcha_for_odoo
+#: model:ir.model.fields,field_description:zehntech_captcha_for_odoo.field_captcha_config_wizard__create_date
+msgid "Created on"
+msgstr "Erstellt am"
+
+#. module: zehntech_captcha_for_odoo
+#: model:ir.model.fields,field_description:zehntech_captcha_for_odoo.field_captcha_config_wizard__display_name
+msgid "Display Name"
+msgstr "Anzeigename"
+
+#. module: zehntech_captcha_for_odoo
+#: model:ir.model.fields,field_description:zehntech_captcha_for_odoo.field_res_config_settings__captcha_enabled
+#: model:ir.model.fields,field_description:zehntech_captcha_for_odoo.field_website__captcha_enabled
+#: model_terms:ir.ui.view,arch_db:zehntech_captcha_for_odoo.website_form_captcha_options
+msgid "Enable Captcha"
+msgstr "Captcha aktivieren"
+
+#. module: zehntech_captcha_for_odoo
+#: model_terms:ir.ui.view,arch_db:zehntech_captcha_for_odoo.captcha_block
+msgid "Enter captcha"
+msgstr "Captcha eingeben"
+
+#. module: zehntech_captcha_for_odoo
+#: model:ir.model.fields,field_description:zehntech_captcha_for_odoo.field_captcha_config_wizard__id
+msgid "ID"
+msgstr "AUSWEIS"
+
+#. module: zehntech_captcha_for_odoo
+#: model:ir.model.fields,field_description:zehntech_captcha_for_odoo.field_captcha_config_wizard__alpha_include_caps
+#: model:ir.model.fields,field_description:zehntech_captcha_for_odoo.field_res_config_settings__alpha_include_caps
+#: model:ir.model.fields,field_description:zehntech_captcha_for_odoo.field_website__include_capital
+msgid "Include Capital Letters"
+msgstr "Fügen Sie Großbuchstaben ein"
+
+#. module: zehntech_captcha_for_odoo
+#: model:ir.model.fields,field_description:zehntech_captcha_for_odoo.field_captcha_config_wizard__alpha_include_symbols
+#: model:ir.model.fields,field_description:zehntech_captcha_for_odoo.field_res_config_settings__alpha_include_symbols
+#: model:ir.model.fields,field_description:zehntech_captcha_for_odoo.field_website__include_symbols
+msgid "Include Symbols"
+msgstr "Fügen Sie Symbole hinzu"
+
+#. module: zehntech_captcha_for_odoo
+#: model:ir.model.fields,field_description:zehntech_captcha_for_odoo.field_captcha_config_wizard__num_include_symbols
+#: model:ir.model.fields,field_description:zehntech_captcha_for_odoo.field_res_config_settings__num_include_symbols
+msgid "Include Symbols (!@#$%^&=)"
+msgstr "Symbole einschließen (!@#$%^&=)"
+
+#. module: zehntech_captcha_for_odoo
+#: model:ir.model.fields,field_description:zehntech_captcha_for_odoo.field_captcha_config_wizard__write_uid
+msgid "Last Updated by"
+msgstr "Zuletzt aktualisiert von"
+
+#. module: zehntech_captcha_for_odoo
+#: model:ir.model.fields,field_description:zehntech_captcha_for_odoo.field_captcha_config_wizard__write_date
+msgid "Last Updated on"
+msgstr "Zuletzt aktualisiert am"
+
+#. module: zehntech_captcha_for_odoo
+#: model:ir.model.fields,field_description:zehntech_captcha_for_odoo.field_res_config_settings__captcha_on_login
+msgid "Login Form"
+msgstr "Anmeldeformular"
+
+#. module: zehntech_captcha_for_odoo
+#: model:ir.model.fields.selection,name:zehntech_captcha_for_odoo.selection__captcha_config_wizard__captcha_type__math
+#: model:ir.model.fields.selection,name:zehntech_captcha_for_odoo.selection__res_config_settings__captcha_type__math
+#: model:ir.model.fields.selection,name:zehntech_captcha_for_odoo.selection__website__captcha_type__mathematical
+#: model_terms:ir.ui.view,arch_db:zehntech_captcha_for_odoo.website_form_captcha_field_options
+msgid "Mathematical"
+msgstr "Mathematical"
+
+#. module: zehntech_captcha_for_odoo
+#: model_terms:ir.ui.view,arch_db:zehntech_captcha_for_odoo.view_website_captcha_res_config
+msgid "Mathematical Captcha Settings"
+msgstr "Mathematische Captcha-Einstellungen"
+
+#. module: zehntech_captcha_for_odoo
+#: model:ir.model.fields.selection,name:zehntech_captcha_for_odoo.selection__captcha_config_wizard__math_operation__mul
+#: model:ir.model.fields.selection,name:zehntech_captcha_for_odoo.selection__res_config_settings__math_operation__mul
+#: model:ir.model.fields.selection,name:zehntech_captcha_for_odoo.selection__website__algebraic_operations__multiplication
+msgid "Multiplication"
+msgstr "Multiplikation"
+
+#. module: zehntech_captcha_for_odoo
+#: model:ir.model.fields,help:zehntech_captcha_for_odoo.field_res_config_settings__captcha_preview_nonce
+msgid "Nonce to force recompute when refresh button is clicked"
+msgstr "Nonce, um beim Klicken auf die Aktualisierungsschaltfläche eine Neuberechnung zu erzwingen"
+
+#. module: zehntech_captcha_for_odoo
+#: model:ir.model.fields,field_description:zehntech_captcha_for_odoo.field_res_config_settings__captcha_not_verified_message
+msgid "Not Verified Message"
+msgstr "Nicht bestätigte Nachricht"
+
+#. module: zehntech_captcha_for_odoo
+#: model:ir.model.fields.selection,name:zehntech_captcha_for_odoo.selection__captcha_config_wizard__captcha_type__num
+#: model:ir.model.fields.selection,name:zehntech_captcha_for_odoo.selection__res_config_settings__captcha_type__num
+#: model:ir.model.fields.selection,name:zehntech_captcha_for_odoo.selection__website__captcha_type__numeric_image
+msgid "Numbers Image"
+msgstr "Zahlenbild"
+
+#. module: zehntech_captcha_for_odoo
+#: model_terms:ir.ui.view,arch_db:zehntech_captcha_for_odoo.view_website_captcha_res_config
+msgid "Numbers Image Settings"
+msgstr "Bildeinstellungen für Zahlen"
+
+#. module: zehntech_captcha_for_odoo
+#: model_terms:ir.ui.view,arch_db:zehntech_captcha_for_odoo.website_form_captcha_field_options
+msgid "Numeric Image"
+msgstr "Numerisches Bild"
+
+#. module: zehntech_captcha_for_odoo
+#: model:ir.model.fields,field_description:zehntech_captcha_for_odoo.field_res_config_settings__captcha_on_reset
+msgid "Password Reset Form"
+msgstr "Formular zum Zurücksetzen des Passworts"
+
+#. module: zehntech_captcha_for_odoo
+#: model_terms:ir.ui.view,arch_db:zehntech_captcha_for_odoo.view_website_captcha_res_config
+msgid "Preview"
+msgstr "Vorschau"
+
+#. module: zehntech_captcha_for_odoo
+#: model_terms:ir.ui.view,arch_db:zehntech_captcha_for_odoo.view_website_captcha_res_config
+msgid "Preview Image"
+msgstr "Vorschaubild"
+
+#. module: zehntech_captcha_for_odoo
+#: model_terms:ir.ui.view,arch_db:zehntech_captcha_for_odoo.view_website_captcha_res_config
+msgid "Preview Text"
+msgstr "Vorschau des Textes"
+
+#. module: zehntech_captcha_for_odoo
+#: model_terms:ir.ui.view,arch_db:zehntech_captcha_for_odoo.view_website_captcha_res_config
+msgid "Preview Text (matches image below)"
+msgstr "Vorschautext (entspricht dem Bild unten)"
+
+#. module: zehntech_captcha_for_odoo
+#: model:ir.model.fields,help:zehntech_captcha_for_odoo.field_res_config_settings__captcha_preview_image
+msgid "Preview image that matches the preview text"
+msgstr "Vorschaubild, das zum Vorschautext passt"
+
+#. module: zehntech_captcha_for_odoo
+#: model:ir.model.fields,help:zehntech_captcha_for_odoo.field_res_config_settings__captcha_preview_text
+msgid "Preview text that matches the preview image"
+msgstr "Vorschautext, der zum Vorschaubild passt"
+
+#. module: zehntech_captcha_for_odoo
+#: model:ir.model.fields,field_description:zehntech_captcha_for_odoo.field_captcha_config_wizard__math_rhs_len
+#: model:ir.model.fields,field_description:zehntech_captcha_for_odoo.field_res_config_settings__math_rhs_len
+#: model:ir.model.fields,field_description:zehntech_captcha_for_odoo.field_website__rhs_digit_length
+msgid "RHS Digit Length"
+msgstr "Länge der rechten Seite"
+
+#. module: zehntech_captcha_for_odoo
+#: model:ir.model.fields.selection,name:zehntech_captcha_for_odoo.selection__captcha_config_wizard__math_operation__rnd
+#: model:ir.model.fields.selection,name:zehntech_captcha_for_odoo.selection__res_config_settings__math_operation__rnd
+#: model:ir.model.fields.selection,name:zehntech_captcha_for_odoo.selection__website__algebraic_operations__random
+msgid "Random"
+msgstr "Random"
+
+#. module: zehntech_captcha_for_odoo
+#: model_terms:ir.ui.view,arch_db:zehntech_captcha_for_odoo.view_website_captcha_res_config
+msgid "Refresh Preview"
+msgstr "Vorschau aktualisieren"
+
+#. module: zehntech_captcha_for_odoo
+#: model_terms:ir.ui.view,arch_db:zehntech_captcha_for_odoo.captcha_block
+msgid "Refresh captcha"
+msgstr "Captcha aktualisieren"
+
+#. module: zehntech_captcha_for_odoo
+#: model_terms:ir.ui.view,arch_db:zehntech_captcha_for_odoo.website_form_captcha_options
+msgid "Remove Captcha"
+msgstr "Captcha entfernen"
+
+#. module: zehntech_captcha_for_odoo
+#: model_terms:ir.ui.view,arch_db:zehntech_captcha_for_odoo.website_form_captcha_options
+msgid "Remove captcha from this form"
+msgstr "Captcha aus diesem Formular entfernen"
+
+#. module: zehntech_captcha_for_odoo
+#: model:ir.model.fields,field_description:zehntech_captcha_for_odoo.field_res_config_settings__captcha_on_signup
+msgid "Signup Form"
+msgstr "Anmeldeformular"
+
+#. module: zehntech_captcha_for_odoo
+#: model:ir.model.fields.selection,name:zehntech_captcha_for_odoo.selection__captcha_config_wizard__math_operation__sub
+#: model:ir.model.fields.selection,name:zehntech_captcha_for_odoo.selection__res_config_settings__math_operation__sub
+#: model:ir.model.fields.selection,name:zehntech_captcha_for_odoo.selection__website__algebraic_operations__subtraction
+msgid "Subtraction"
+msgstr "Subtraktion"
+
+#. module: zehntech_captcha_for_odoo
+#: model:ir.model,name:zehntech_captcha_for_odoo.model_website
+#: model:ir.model.fields,field_description:zehntech_captcha_for_odoo.field_res_config_settings__website_id
+msgid "Website"
+msgstr "Webseite"
+
+#. module: zehntech_captcha_for_odoo
+#: model_terms:ir.ui.view,arch_db:zehntech_captcha_for_odoo.captcha_block
+msgid "captcha"
+msgstr "Captcha"
