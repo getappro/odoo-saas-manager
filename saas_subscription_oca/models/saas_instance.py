@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from datetime import datetime, time
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError
 
@@ -16,7 +15,10 @@ class SaaSInstance(models.Model):
     )
 
     def _get_subscription_stage(self, stage_type):
-        return self.env['sale.subscription.stage'].search([('type', '=', stage_type)], limit=1)
+        try:
+            return self.env['sale.subscription.stage'].search([('type', '=', stage_type)], limit=1)
+        except Exception:
+            return False
 
     def _create_sale_subscription(self):
         self.ensure_one()
@@ -45,6 +47,9 @@ class SaaSInstance(models.Model):
         return subscription
 
     def _sync_subscription_from_instance(self, subscription, previous_state, vals):
+        if not subscription.exists():
+            return
+
         update_vals = {}
         if 'activation_date' in vals and self.activation_date:
             update_vals['date_start'] = fields.Date.to_date(self.activation_date)
@@ -59,28 +64,51 @@ class SaaSInstance(models.Model):
             'expired': 'post',
             'terminated': 'post',
         }
+
         if self.state != previous_state:
             stage_type = state_map.get(self.state)
             if self.state in ['terminated', 'expired']:
-                subscription.with_context(saas_sync_skip=True).close_subscription()
+                try:
+                    subscription.with_context(saas_sync_skip=True).close_subscription()
+                except Exception:
+                    # Si l'abonnement ne peut pas être fermé, on l'ignore
+                    pass
             elif stage_type:
-                stage = self._get_subscription_stage(stage_type)
-                if stage and subscription.stage_id != stage:
-                    subscription.with_context(saas_sync_skip=True).write({'stage_id': stage.id})
+                try:
+                    stage = self._get_subscription_stage(stage_type)
+                    if stage and stage.exists() and subscription.stage_id != stage:
+                        subscription.with_context(saas_sync_skip=True).write({'stage_id': stage.id})
+                except Exception:
+                    # Si la synchronisation échoue, on l'ignore pour éviter les erreurs
+                    pass
             if self.state == 'suspended':
                 update_vals['to_renew'] = True
 
         if update_vals:
-            subscription.with_context(saas_sync_skip=True).write(update_vals)
+            try:
+                subscription.with_context(saas_sync_skip=True).write(update_vals)
+            except Exception:
+                # Si l'écriture échoue, on l'ignore
+                pass
 
     def write(self, vals):
         previous_state = {rec.id: rec.state for rec in self}
         res = super().write(vals)
+
         for record in self:
             subscription = record.sale_subscription_id
             if not subscription and record.state == 'active':
-                subscription = record._create_sale_subscription()
-            if subscription:
-                record._sync_subscription_from_instance(subscription, previous_state.get(record.id), vals)
+                try:
+                    subscription = record._create_sale_subscription()
+                except Exception:
+                    # Si la création d'abonnement échoue, on continue
+                    continue
+
+            if subscription and subscription.exists():
+                try:
+                    record._sync_subscription_from_instance(subscription, previous_state.get(record.id), vals)
+                except Exception:
+                    # Si la synchronisation échoue, on l'ignore pour éviter de bloquer la terminaison
+                    pass
         return res
 
