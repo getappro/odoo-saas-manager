@@ -7,8 +7,10 @@ import datetime
 from urllib.parse import urljoin, urlencode
 
 import jwt
-from odoo import http, fields
+from odoo import http, fields, SUPERUSER_ID, api
 from odoo.http import request
+from odoo.tools.config import config as odoo_config
+import odoo
 
 _logger = logging.getLogger(__name__)
 
@@ -193,4 +195,110 @@ class SaaSAgentController(http.Controller):
 
         redirect_url = next or record.redirect_url or '/web'
         return request.redirect(redirect_url)
+
+    # ---- Bootstrap: push agent secret via master password ----
+
+    @http.route('/saas/bootstrap', type='json', auth='none', csrf=False, methods=['POST'])
+    def bootstrap_agent_secret(self, master_password=None, agent_secret=None, instance_uuid=None, **kw):
+        """Set agent secret using Odoo master password (no admin credentials needed)."""
+        if not master_password or not agent_secret:
+            return {'success': False, 'error': 'Missing required parameters'}
+
+        real_master = odoo_config.get('admin_passwd') or ''
+        if not real_master:
+            return {'success': False, 'error': 'Master password not configured on instance'}
+
+        if master_password != real_master:
+            _logger.warning("Invalid master password in bootstrap request")
+            return {'success': False, 'error': 'Invalid master password'}
+
+        try:
+            db_name = getattr(request, 'db', None) or http.db_monodb()
+            if not db_name:
+                return {'success': False, 'error': 'No database found'}
+
+            registry = odoo.registry(db_name)
+            with registry.cursor() as cr:
+                env = api.Environment(cr, SUPERUSER_ID, {})
+                ICP = env['ir.config_parameter']
+                ICP.set_param('saas_agent.secret', agent_secret)
+                if instance_uuid:
+                    ICP.set_param('saas_agent.instance_uuid', instance_uuid)
+
+            _logger.info("Agent secret bootstrapped successfully via master password")
+            return {'success': True}
+
+        except Exception as e:
+            _logger.exception("Bootstrap failed: %s", e)
+            return {'success': False, 'error': str(e)}
+
+    # ---- Direct JWT SSO (single-step, no intermediate token) ----
+
+    @http.route('/saas/sso/jwt', type='http', auth='none', csrf=False, methods=['GET'])
+    def sso_jwt_login(self, token=None, **kw):
+        """Direct SSO: validate JWT from manager and create session in one step."""
+        if not token:
+            _logger.warning('SSO JWT login: missing token')
+            return request.redirect('/web/login?error=missing_token')
+
+        try:
+            db_name = getattr(request, 'db', None) or http.db_monodb()
+            if not db_name:
+                return request.redirect('/web/login?error=no_database')
+
+            registry = odoo.registry(db_name)
+
+            with registry.cursor() as cr:
+                env = api.Environment(cr, SUPERUSER_ID, {})
+                secret = env['ir.config_parameter'].get_param('saas_agent.secret', '')
+
+            if not secret:
+                _logger.warning("SSO JWT: no agent secret configured")
+                return request.redirect('/web/login?error=not_configured')
+
+            payload = jwt.decode(token, secret, algorithms=['HS256'], options={'verify_aud': False})
+
+            if payload.get('action') != 'sso':
+                _logger.warning("SSO JWT: invalid action %s", payload.get('action'))
+                return request.redirect('/web/login?error=invalid_action')
+
+            if payload.get('db') and payload['db'] != db_name:
+                _logger.warning("SSO JWT: db mismatch %s vs %s", payload.get('db'), db_name)
+                return request.redirect('/web/login?error=db_mismatch')
+
+            user_login = payload.get('user_login', 'admin')
+            redirect_url = payload.get('redirect', '/web')
+
+            with registry.cursor() as cr:
+                env = api.Environment(cr, SUPERUSER_ID, {})
+                user = env['res.users'].search([
+                    ('login', '=', user_login),
+                    ('active', '=', True),
+                ], limit=1)
+
+                if not user:
+                    _logger.warning("SSO JWT: user not found %s", user_login)
+                    return request.redirect('/web/login?error=user_not_found')
+
+                uid = user.id
+                session_token = user._compute_session_token(request.session.sid)
+
+            request.session.db = db_name
+            request.session.uid = uid
+            request.session.login = user_login
+            request.session.session_token = session_token
+            request.session.context = dict(request.session.context or {}, uid=uid)
+
+            _logger.info("SSO JWT login successful for user %s (uid=%s)", user_login, uid)
+            return request.redirect(redirect_url)
+
+        except jwt.ExpiredSignatureError:
+            _logger.warning("SSO JWT: expired token")
+            return request.redirect('/web/login?error=token_expired')
+        except jwt.InvalidTokenError as e:
+            _logger.warning("SSO JWT: invalid token: %s", e)
+            return request.redirect('/web/login?error=invalid_token')
+        except Exception as e:
+            _logger.exception("SSO JWT login error: %s", e)
+            return request.redirect('/web/login?error=server_error')
 

@@ -1251,62 +1251,56 @@ class SaaSInstance(models.Model):
         return None
 
     def _push_agent_secret_to_instance(self):
+        """Push agent secret via /saas/bootstrap using server master password.
+
+        No dependency on admin credentials — works even if the client
+        changed their admin login/password.
+        """
         self.ensure_one()
         base_url = self._build_instance_url()
         if not base_url:
             _logger.warning("No domain to push agent secret for %s", self.name)
             return False
-        if not self.admin_login or not self.admin_password:
-            _logger.warning("Admin credentials missing, cannot push agent secret to %s", self.name)
+
+        server = self.server_id
+        if not server or not server.master_password:
+            _logger.warning(
+                "No master password configured on server %s",
+                server.name if server else 'N/A',
+            )
             return False
 
-        rpc_url = f"{base_url}/jsonrpc"
         secret = self._ensure_agent_secret()
 
         try:
-            login_payload = {
-                'jsonrpc': '2.0',
-                'method': 'call',
-                'params': {
-                    'service': 'common',
-                    'method': 'login',
-                    'args': [self.database_name, self.admin_login, self.admin_password],
-                },
-                'id': 1,
+            bootstrap_payload = {
+                'master_password': server.master_password,
+                'agent_secret': secret,
+                'instance_uuid': self.database_name,
             }
-            login_resp = requests.post(rpc_url, json=login_payload, timeout=30, verify=False)
-            login_resp.raise_for_status()
-            uid = login_resp.json().get('result')
-            if not uid:
-                _logger.warning("RPC login failed on %s when pushing agent secret", self.name)
-                return False
+            response = requests.post(
+                f"{base_url}/saas/bootstrap",
+                json={'jsonrpc': '2.0', 'params': bootstrap_payload},
+                headers={'Content-Type': 'application/json'},
+                timeout=30,
+                verify=False,
+            )
+            response.raise_for_status()
+            payload = self._parse_agent_response(response)
 
-            params_payload = {
-                'jsonrpc': '2.0',
-                'method': 'call',
-                'params': {
-                    'service': 'object',
-                    'method': 'execute_kw',
-                    'args': [
-                        self.database_name,
-                        uid,
-                        self.admin_password,
-                        'ir.config_parameter',
-                        'set_param',
-                        ['saas_agent.secret', secret],
-                    ],
-                },
-                'id': 2,
-            }
-            requests.post(rpc_url, json=params_payload, timeout=30, verify=False).raise_for_status()
+            if payload.get('success'):
+                _logger.info("Agent secret bootstrapped to %s via master password", self.name)
+                return True
 
-            uuid_payload = params_payload.copy()
-            uuid_payload['params']['args'][-1] = ['saas_agent.instance_uuid', self.database_name]
-            uuid_payload['id'] = 3
-            requests.post(rpc_url, json=uuid_payload, timeout=30, verify=False).raise_for_status()
+            _logger.warning(
+                "Bootstrap agent secret failed for %s: %s",
+                self.name, payload.get('error', 'Unknown error'),
+            )
+            return False
 
-            _logger.info("Agent secret synced to %s", self.name)
-            return True
+        except requests.exceptions.RequestException as exc:
+            _logger.warning("Failed to bootstrap agent secret to %s: %s", self.name, exc)
+            return False
         except Exception as exc:
             _logger.warning("Failed to push agent secret to %s: %s", self.name, exc)
             return False
@@ -1335,12 +1329,16 @@ class SaaSInstance(models.Model):
         return requests.post(url, json={'token': token}, headers=headers, timeout=timeout, verify=False)
 
     def action_sso_login(self):
+        """SSO login via JWT token — no admin credentials needed."""
         self.ensure_one()
         if self.state not in ['active', 'suspended']:
             raise UserError(_('Instance must be active to access it.'))
 
         if not self._push_agent_secret_to_instance():
-            raise UserError(_('Cannot sync agent secret with instance.'))
+            raise UserError(_(
+                'Cannot sync agent secret with instance. '
+                'Check that saas_agent is installed and the server master password is correct.'
+            ))
 
         user_login = self.agent_impersonate_login or self.admin_login or 'admin'
         token = self._build_agent_jwt('sso', {
@@ -1348,22 +1346,14 @@ class SaaSInstance(models.Model):
             'redirect': '/web',
         })
 
-        try:
-            response = self._call_agent('/saas/sso/request', token)
-            response.raise_for_status()
-            payload = self._parse_agent_response(response)
-            if payload.get('success') and payload.get('login_url'):
-                return {
-                    'type': 'ir.actions.act_url',
-                    'url': payload['login_url'],
-                    'target': 'new',
-                }
-            error_msg = payload.get('error') or _('SSO request failed.')
-            _logger.warning("SSO request error for %s: %s", self.name, error_msg)
-            raise UserError(error_msg)
-        except Exception as exc:
-            _logger.warning("SSO login failed for %s: %s", self.name, exc)
-            return self.action_access_instance()
+        base_url = self._build_instance_url()
+        sso_url = f"{base_url}/saas/sso/jwt?token={token}"
+
+        return {
+            'type': 'ir.actions.act_url',
+            'url': sso_url,
+            'target': 'new',
+        }
 
     def _send_user_limit_to_instance(self):
         self.ensure_one()
