@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from . import saas_instance
 from . import sale_subscription
-from . import saas_plan
-
+from . import sale_order
+from . import product_product
+from . import product_template

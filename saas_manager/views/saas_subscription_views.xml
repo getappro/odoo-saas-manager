@@ -43,7 +43,6 @@
                             <group string="Subscription Details">
                                 <field name="instance_id" options="{'no_create': True}"/>
                                 <field name="partner_id" readonly="1"/>
-                                <field name="plan_id" options="{'no_create': True}"/>
                                 <field name="period"/>
                             </group>
                             <group string="Configuration">
@@ -95,7 +94,6 @@
                     <field name="name"/>
                     <field name="partner_id" widget="many2one_avatar_user"/>
                     <field name="instance_id"/>
-                    <field name="plan_id"/>
                     <field name="period"/>
                     <field name="start_date"/>
                     <field name="end_date"/>
@@ -127,7 +125,6 @@
                     <field name="name"/>
                     <field name="partner_id"/>
                     <field name="instance_id"/>
-                    <field name="plan_id"/>
                     <field name="state"/>
                     <field name="amount"/>
                     <field name="is_trial"/>
@@ -148,7 +145,6 @@
                                 </div>
                                 <div class="o_kanban_record_body">
                                     <div><i class="fa fa-user"/> <field name="partner_id"/></div>
-                                    <div><i class="fa fa-tag"/> <field name="plan_id"/></div>
                                     <div class="mt-2">
                                         <strong class="text-primary">
                                             <field name="amount" widget="monetary"/> / <field name="period"/>
@@ -176,7 +172,6 @@
                     <field name="name"/>
                     <field name="partner_id"/>
                     <field name="instance_id"/>
-                    <field name="plan_id"/>
                     <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
                     <filter string="Active" name="active_subscriptions" domain="[('state', '=', 'active')]"/>
                     <filter string="Expired" name="expired" domain="[('state', '=', 'expired')]"/>
@@ -190,7 +185,6 @@
                     <group expand="0" string="Group By">
                         <filter string="Customer" name="group_partner" context="{'group_by': 'partner_id'}"/>
                         <filter string="Instance" name="group_instance" context="{'group_by': 'instance_id'}"/>
-                        <filter string="Plan" name="group_plan" context="{'group_by': 'plan_id'}"/>
                         <filter string="State" name="group_state" context="{'group_by': 'state'}"/>
                         <filter string="Payment State" name="group_payment_state" context="{'group_by': 'payment_state'}"/>
                         <filter string="Period" name="group_period" context="{'group_by': 'period'}"/>

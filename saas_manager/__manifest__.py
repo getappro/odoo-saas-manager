@@ -49,7 +49,6 @@
         # Master data
         'data/saas_server_data.xml',
         'data/saas_template_data.xml',
-        'data/saas_plan_data.xml',
         'data/saas_instance_stage_data.xml',
 
         # Automation
@@ -59,7 +58,6 @@
         # Views
         'views/saas_server_views.xml',
         'views/saas_template_views.xml',
-        'views/saas_plan_views.xml',
         'views/saas_instance_views.xml',
         #'views/saas_dashboard_views.xml',
         'views/saas_menu.xml',

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="sale_subscription_form_view_inherit_saas" model="ir.ui.view">
+        <field name="name">sale.subscription.form.inherit.saas</field>
+        <field name="model">sale.subscription</field>
+        <field name="inherit_id" ref="subscription_oca.sale_subscription_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="action_create_saas_instance"
+                        type="object"
+                        string="Créer Instance SaaS"
+                        class="btn-primary"
+                        invisible="saas_instance_id"/>
+            </xpath>
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_saas_instance"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-cloud"
+                        invisible="not saas_instance_id">
+                    <field name="saas_instance_id" widget="statinfo" string="Instance SaaS"/>
+                </button>
+            </xpath>
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="subdomain" placeholder="ex: mon-client"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
+

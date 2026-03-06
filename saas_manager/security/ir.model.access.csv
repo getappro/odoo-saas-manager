@@ -5,9 +5,6 @@ access_saas_server_admin,saas.server.admin,model_saas_server,group_saas_admin,1,
 access_saas_template_user,saas.template.user,model_saas_template,group_saas_user,1,0,0,0
 access_saas_template_manager,saas.template.manager,model_saas_template,group_saas_manager,1,1,1,0
 access_saas_template_admin,saas.template.admin,model_saas_template,group_saas_admin,1,1,1,1
-access_saas_plan_user,saas.plan.user,model_saas_plan,group_saas_user,1,0,0,0
-access_saas_plan_manager,saas.plan.manager,model_saas_plan,group_saas_manager,1,1,1,0
-access_saas_plan_admin,saas.plan.admin,model_saas_plan,group_saas_admin,1,1,1,1
 access_saas_instance_user,saas.instance.user,model_saas_instance,group_saas_user,1,0,0,0
 access_saas_instance_manager,saas.instance.manager,model_saas_instance,group_saas_manager,1,1,1,1
 access_saas_instance_admin,saas.instance.admin,model_saas_instance,group_saas_admin,1,1,1,1

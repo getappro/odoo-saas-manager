@@ -50,12 +50,12 @@
                   sequence="2"
                   groups="saas_manager.group_saas_manager,saas_manager.group_saas_admin"/>
 
-        <menuitem id="menu_saas_plans"
+        <!--<menuitem id="menu_saas_plans"
                   name="Plans"
                   parent="menu_saas_configuration"
                   action="action_saas_plan"
                   sequence="3"
-                  groups="saas_manager.group_saas_manager,saas_manager.group_saas_admin"/>
+                  groups="saas_manager.group_saas_manager,saas_manager.group_saas_admin"/>-->
 
     </data>
 </odoo>

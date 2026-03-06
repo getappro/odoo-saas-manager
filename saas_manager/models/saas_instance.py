@@ -82,14 +82,6 @@ class SaaSInstance(models.Model):
         ondelete='restrict',
         help="Template used for this instance"
     )
-    plan_id = fields.Many2one(
-        'saas.plan',
-        string='Plan',
-        required=True,
-        tracking=True,
-        ondelete='restrict',
-        help="Subscription plan"
-    )
     server_id = fields.Many2one(
         'saas.server',
         string='Server',
@@ -140,7 +132,7 @@ class SaaSInstance(models.Model):
     # User Limit Management
     user_limit = fields.Integer(
         string='User Limit',
-        compute='_compute_user_limit',
+        #compute='_compute_user_limit',
         store=True,
         readonly=False,
         tracking=True,
@@ -256,14 +248,14 @@ class SaaSInstance(models.Model):
         order = order or 'sequence, id'
         return stages.search([], order=order)
 
-    @api.depends('plan_id', 'plan_id.user_limit')
-    def _compute_user_limit(self):
-        """Get user limit from plan"""
-        for instance in self:
-            if instance.plan_id and hasattr(instance.plan_id, 'user_limit'):
-                instance.user_limit = instance.plan_id.user_limit
-            else:
-                instance.user_limit = 10  # Default limit
+    #@api.depends('plan_id', 'plan_id.user_limit')
+    #def _compute_user_limit(self):
+    #    """Get user limit from plan"""
+    #    for instance in self:
+    #        if instance.plan_id and hasattr(instance.plan_id, 'user_limit'):
+    #            instance.user_limit = instance.plan_id.user_limit
+    #        else:
+    #            instance.user_limit = 10  # Default limit
 
     def _compute_current_users(self):
         """

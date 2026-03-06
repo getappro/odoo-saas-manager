@@ -76,7 +76,7 @@
                             <group string="Configuration">
                                 <field name="partner_id" widget="many2one_avatar_user"/>
                                 <field name="template_id" options="{'no_create': True}"/>
-                                <field name="plan_id" options="{'no_create': True}"/>
+                                <!--<field name="plan_id" options="{'no_create': True}"/>-->
                                 <field name="server_id" options="{'no_create': True}"/>
                                 <field name="protocol"/>
                             </group>
@@ -130,7 +130,7 @@
                     <field name="partner_id" widget="many2one_avatar_user"/>
                     <field name="domain" widget="url"/>
                     <field name="template_id"/>
-                    <field name="plan_id"/>
+                    <!--<field name="plan_id"/>-->
                     <field name="server_id"/>
                     <field name="stage_id" optional="show"/>
                     <field name="current_users" optional="show"/>
@@ -164,7 +164,7 @@
                     <field name="stage_id"/>
                     <field name="color"/>
                     <field name="template_id"/>
-                    <field name="plan_id"/>
+                    <!--<field name="plan_id"/>-->
                     <templates>
                         <t t-name="card" class="flex-row">
                             <aside>
@@ -188,7 +188,7 @@
                                 </div>
                                 <div class="mt-2">
                                     <i class="fa fa-cube"/> <field name="template_id"/>
-                                    <span class="ms-2"><i class="fa fa-tag"/> <field name="plan_id"/></span>
+                                    <!--<span class="ms-2"><i class="fa fa-tag"/> <field name="plan_id"/></span>-->
                                 </div>
                             </main>
                         </t>
@@ -209,7 +209,7 @@
                     <field name="database_name"/>
                     <field name="subdomain"/>
                     <field name="template_id"/>
-                    <field name="plan_id"/>
+                    <!--<field name="plan_id"/>-->
                     <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
                     <filter string="Provisioning" name="provisioning" domain="[('state', '=', 'provisioning')]"/>
                     <filter string="Active" name="active_instances" domain="[('state', '=', 'active')]"/>
@@ -223,7 +223,7 @@
                     <group expand="0" string="Group By">
                         <filter string="Customer" name="group_partner" context="{'group_by': 'partner_id'}"/>
                         <filter string="Template" name="group_template" context="{'group_by': 'template_id'}"/>
-                        <filter string="Plan" name="group_plan" context="{'group_by': 'plan_id'}"/>
+                        <!--<filter string="Plan" name="group_plan" context="{'group_by': 'plan_id'}"/>-->
                         <filter string="Stage" name="group_stage" context="{'group_by': 'stage_id'}"/>
                         <filter string="State" name="group_state" context="{'group_by': 'state'}"/>
                         <filter string="Activation Month" name="group_activation_month" context="{'group_by': 'activation_date:month'}"/>
