@@ -30,7 +30,13 @@
                                 class="btn-info"
                                 invisible="state not in ['active', 'suspended']"
                                 icon="fa-refresh"/>
-                        <button name="action_suspend" 
+                        <button name="action_refresh_users_count"
+                                type="object"
+                                string="Refresh Users"
+                                class="btn-secondary"
+                                invisible="state not in ['active', 'suspended']"
+                                icon="fa-users"/>
+                        <button name="action_suspend"
                                 type="object" 
                                 string="Suspend"
                                 invisible="state != 'active'"/>

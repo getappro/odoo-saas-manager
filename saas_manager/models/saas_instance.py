@@ -262,7 +262,7 @@ class SaaSInstance(models.Model):
         Fetch current user count from instance via RPC.
         """
         for instance in self:
-            if instance.state == 'active' and instance.domain:
+            if instance.state in ('active', 'suspended') and instance.domain:
                 instance.current_users = instance._get_users_count_from_instance()
             else:
                 instance.current_users = 0
@@ -392,8 +392,12 @@ class SaaSInstance(models.Model):
             })
             
             _logger.info(f"Instance {self.name} provisioned successfully")
-            
-            # Step 7: Send provisioning email to customer
+
+            # Step 7: Sync user limit to instance
+            if self.user_limit:
+                self._send_user_limit_to_instance()
+
+            # Step 8: Send provisioning email to customer
             self._send_provisioning_email()
 
             return {
@@ -1164,10 +1168,9 @@ class SaaSInstance(models.Model):
         
         for instance in expired_instances:
             try:
-                instance.write({'state': 'expired'})
-                _logger.info(f"Instance {instance.name} marked as expired")
-                
-                # TODO Phase 2: Send expiration email
+                instance.action_suspend()  # This will also send suspension email and notify agent
+                instance.write({'state': 'suspended'})
+                _logger.info(f"Instance {instance.name} marked as suspended due to subscription expiry")
                 
             except Exception as e:
                 _logger.error(f"Failed to expire instance {instance.name}: {str(e)}")
@@ -1227,6 +1230,33 @@ class SaaSInstance(models.Model):
                 'Failed to sync user limit with instance. '
                 'Check that saas_agent is installed in the instance and that the domain is accessible.'
             ))
+
+    def action_refresh_users_count(self):
+        """
+        Refresh current users count from instance.
+        Called from button in form view.
+        """
+        self.ensure_one()
+
+        if self.state not in ['active', 'suspended']:
+            raise UserError(_('Instance must be active or suspended.'))
+
+        if not self.domain:
+            raise UserError(_('Instance has no domain configured.'))
+
+        count = self._get_users_count_from_instance()
+        percentage = (count / self.user_limit * 100) if self.user_limit else 0
+
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': _('Users Count'),
+                'message': _('%d users / %d limit (%.1f%%)') % (count, self.user_limit, percentage),
+                'type': 'info',
+                'sticky': False,
+            }
+        }
 
     def _ensure_agent_secret(self):
         self.ensure_one()

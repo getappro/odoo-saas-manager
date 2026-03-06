@@ -57,6 +57,7 @@ class SaleSubscription(models.Model):
         # Provisionner l'instance
         instance.action_provision_instance()
 
+
         return {
             'type': 'ir.actions.act_window',
             'res_model': 'saas.instance',

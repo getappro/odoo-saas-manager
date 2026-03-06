@@ -17,7 +17,6 @@ class SaaSUserLimitHelper(models.AbstractModel):
 
     def _billable_domain(self):
         portal_group = self.env.ref('base.group_portal', raise_if_not_found=False)
-        system_group = self.env.ref('base.group_system', raise_if_not_found=False)
 
         domain = [
             ('active', '=', True),
@@ -26,8 +25,6 @@ class SaaSUserLimitHelper(models.AbstractModel):
         ]
         if portal_group:
             domain.append(('groups_id', 'not in', portal_group.ids))
-        if system_group:
-            domain.append(('groups_id', 'not in', system_group.ids))
         return domain
 
     def count_billable_users(self):
@@ -38,8 +35,6 @@ class SaaSUserLimitHelper(models.AbstractModel):
         if not user.active or not user.login or user.share:
             return False
         if user.has_group('base.group_portal'):
-            return False
-        if user.has_group('base.group_system'):
             return False
         return True
 

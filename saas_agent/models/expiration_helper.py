@@ -60,7 +60,7 @@ class SaaSExpirationHelper(models.AbstractModel):
                 "  <div class='card'>"\
                 "    <div class='title'>Instance suspendue</div>"\
                 "    <div class='subtitle'>Cette instance est suspendue ou expirée. Contactez votre administrateur ou votre support pour rétablir l'accès.</div>"\
-                "    <a class='cta' href='mailto:support@example.com'>Contacter le support</a>"\
+                "    <a class='cta' href='mailto:support@deepcode.ma'>Contacter le support</a>"\
                 "  </div>"\
                 "</body>"\
                 "</html>"
