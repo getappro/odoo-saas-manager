@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Portal Home Link -->
+    <template id="portal_my_home_saas" name="Show SaaS Instances" inherit_id="portal.portal_my_home" priority="30">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="icon" t-value="'/saas_portal/static/src/img/cloud.svg'"/>
+                <t t-set="title">Mes Instances</t>
+                <t t-set="url" t-value="'/my/instances'"/>
+                <t t-set="text">Accédez à vos instances SaaS</t>
+                <t t-set="placeholder_count" t-value="'saas_instance_count'"/>
+            </t>
+        </xpath>
+    </template>
+
+    <!-- Portal Breadcrumb -->
+    <template id="portal_my_home_menu_saas" name="Portal layout: SaaS menu" inherit_id="portal.portal_breadcrumbs" priority="30">
+        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+            <li t-if="page_name == 'saas_instances'" class="breadcrumb-item active">
+                Mes Instances
+            </li>
+            <li t-if="page_name == 'saas_instance_detail'" class="breadcrumb-item">
+                <a href="/my/instances">Mes Instances</a>
+            </li>
+            <li t-if="page_name == 'saas_instance_detail'" class="breadcrumb-item active">
+                <t t-out="instance.name"/>
+            </li>
+        </xpath>
+    </template>
+
+    <!-- Instances List -->
+    <template id="portal_my_instances" name="My SaaS Instances">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Mes Instances</t>
+            </t>
+
+            <t t-if="not instances">
+                <div class="alert alert-info" role="alert">
+                    Vous n'avez aucune instance SaaS pour le moment.
+                </div>
+            </t>
+
+            <t t-if="instances">
+                <div class="row">
+                    <t t-foreach="instances" t-as="instance">
+                        <div class="col-md-6 col-lg-4 mb-4">
+                            <div class="card h-100 saas-instance-card">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h5 class="mb-0">
+                                        <a t-attf-href="/my/instances/#{instance.id}">
+                                            <t t-out="instance.name"/>
+                                        </a>
+                                    </h5>
+                                    <span t-attf-class="badge rounded-pill #{
+                                        'bg-success' if instance.state == 'active' else
+                                        'bg-warning' if instance.state == 'suspended' else
+                                        'bg-danger' if instance.state == 'expired' else
+                                        'bg-secondary'}">
+                                        <t t-if="instance.state == 'active'">Actif</t>
+                                        <t t-elif="instance.state == 'suspended'">Suspendu</t>
+                                        <t t-elif="instance.state == 'expired'">Expiré</t>
+                                        <t t-elif="instance.state == 'draft'">Brouillon</t>
+                                        <t t-elif="instance.state == 'provisioning'">Provisionnement</t>
+                                        <t t-else=""><t t-out="instance.state"/></t>
+                                    </span>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-2">
+                                        <i class="fa fa-globe me-2"/>
+                                        <a t-attf-href="#{instance.protocol}://#{instance.domain}" target="_blank">
+                                            <t t-out="instance.domain"/>
+                                        </a>
+                                    </div>
+                                    <div class="mb-2">
+                                        <i class="fa fa-users me-2"/>
+                                        <span t-out="instance.current_users"/> / <span t-out="instance.user_limit"/> utilisateurs
+                                        <div class="progress mt-1" style="height: 6px;">
+                                            <div class="progress-bar" role="progressbar"
+                                                 t-attf-style="width: #{min(instance.users_percentage, 100)}%;"
+                                                 t-attf-class="#{
+                                                    'bg-success' if instance.users_percentage &lt; 70 else
+                                                    'bg-warning' if instance.users_percentage &lt; 90 else
+                                                    'bg-danger'}"/>
+                                        </div>
+                                    </div>
+                                    <div class="mb-2" t-if="instance.expiration_date">
+                                        <i class="fa fa-calendar me-2"/>
+                                        Expire le: <span t-field="instance.expiration_date" t-options='{"widget": "date"}'/>
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <a t-if="instance.state == 'active'"
+                                       t-attf-href="#{instance.protocol}://#{instance.domain}"
+                                       target="_blank" class="btn btn-primary btn-sm">
+                                        <i class="fa fa-external-link me-1"/> Accéder
+                                    </a>
+                                    <a t-attf-href="/my/instances/#{instance.id}" class="btn btn-outline-secondary btn-sm">
+                                        <i class="fa fa-info-circle me-1"/> Détails
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </div>
+            </t>
+
+            <div t-if="pager" class="o_portal_pager text-center mt-4">
+                <t t-call="portal.pager"/>
+            </div>
+        </t>
+    </template>
+
+    <!-- Instance Detail -->
+    <template id="portal_instance_detail" name="Instance Detail">
+        <t t-call="portal.portal_layout">
+            <div class="card mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h3 class="mb-0"><t t-out="instance.name"/></h3>
+                    <span t-attf-class="badge rounded-pill fs-6 #{
+                        'bg-success' if instance.state == 'active' else
+                        'bg-warning' if instance.state == 'suspended' else
+                        'bg-danger' if instance.state == 'expired' else
+                        'bg-secondary'}">
+                        <t t-if="instance.state == 'active'">Actif</t>
+                        <t t-elif="instance.state == 'suspended'">Suspendu</t>
+                        <t t-elif="instance.state == 'expired'">Expiré</t>
+                        <t t-elif="instance.state == 'draft'">Brouillon</t>
+                        <t t-elif="instance.state == 'provisioning'">Provisionnement</t>
+                        <t t-else=""><t t-out="instance.state"/></t>
+                    </span>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5>Informations générales</h5>
+                            <table class="table table-borderless">
+                                <tr>
+                                    <td class="text-muted" style="width: 40%">Domaine</td>
+                                    <td>
+                                        <a t-attf-href="#{instance.protocol}://#{instance.domain}" target="_blank">
+                                            <t t-out="instance.domain"/>
+                                            <i class="fa fa-external-link ms-1"/>
+                                        </a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-muted">Version Odoo</td>
+                                    <td><t t-out="instance.version"/></td>
+                                </tr>
+                                <tr>
+                                    <td class="text-muted">Date d'activation</td>
+                                    <td t-if="instance.activation_date">
+                                        <span t-field="instance.activation_date" t-options='{"widget": "date"}'/>
+                                    </td>
+                                    <td t-else="">-</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-muted">Date d'expiration</td>
+                                    <td t-if="instance.expiration_date">
+                                        <span t-field="instance.expiration_date" t-options='{"widget": "date"}'/>
+                                    </td>
+                                    <td t-else="">-</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Utilisation</h5>
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span>Utilisateurs</span>
+                                    <span>
+                                        <strong t-out="instance.current_users"/>
+                                        / <t t-out="instance.user_limit"/>
+                                    </span>
+                                </div>
+                                <div class="progress" style="height: 20px;">
+                                    <div class="progress-bar" role="progressbar"
+                                         t-attf-style="width: #{min(instance.users_percentage, 100)}%;"
+                                         t-attf-class="#{
+                                            'bg-success' if instance.users_percentage &lt; 70 else
+                                            'bg-warning' if instance.users_percentage &lt; 90 else
+                                            'bg-danger'}">
+                                        <span t-out="'%.0f' % instance.users_percentage"/>%
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-3" t-if="instance.storage_used">
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span>Stockage</span>
+                                    <span><t t-out="'%.2f' % instance.storage_used"/> GB</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <a t-if="instance.state == 'active'"
+                       t-attf-href="#{instance.protocol}://#{instance.domain}"
+                       target="_blank" class="btn btn-primary">
+                        <i class="fa fa-external-link me-2"/> Accéder à l'instance
+                    </a>
+                    <a href="/my/instances" class="btn btn-outline-secondary">
+                        <i class="fa fa-arrow-left me-2"/> Retour
+                    </a>
+                </div>
+            </div>
+
+            <div t-if="instance.state == 'suspended'" class="alert alert-warning">
+                <i class="fa fa-exclamation-triangle me-2"/>
+                <strong>Instance suspendue.</strong>
+                Veuillez contacter le support ou renouveler votre abonnement pour réactiver votre instance.
+            </div>
+
+            <div t-if="instance.state == 'expired'" class="alert alert-danger">
+                <i class="fa fa-times-circle me-2"/>
+                <strong>Instance expirée.</strong>
+                Votre abonnement a expiré. Veuillez renouveler votre abonnement pour continuer à utiliser ce service.
+            </div>
+        </t>
+    </template>
+
+</odoo>
+

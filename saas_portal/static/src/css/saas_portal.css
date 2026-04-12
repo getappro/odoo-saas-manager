@@ -1,0 +1,29 @@
+/* SaaS Portal Styles */
+
+.saas-instance-card {
+    transition: box-shadow 0.2s ease-in-out;
+}
+
+.saas-instance-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.saas-instance-card .card-header h5 a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.saas-instance-card .card-header h5 a:hover {
+    color: var(--o-brand-primary, #714B67);
+}
+
+.saas-instance-card .progress {
+    border-radius: 4px;
+}
+
+.saas-instance-card .fa {
+    width: 20px;
+    text-align: center;
+    color: #6c757d;
+}
+

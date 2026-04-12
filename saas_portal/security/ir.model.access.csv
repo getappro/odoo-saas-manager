@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_saas_instance_portal,saas.instance.portal,saas_manager.model_saas_instance,base.group_portal,1,0,0,0
+
