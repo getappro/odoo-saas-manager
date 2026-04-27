@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Enhanced Portal Layout - Add class to main wrapper -->
+    <template id="portal_layout_enhanced" inherit_id="portal.frontend_layout" name="Portal Enhanced Layout">
+        <xpath expr="//div[@id='wrapwrap']" position="attributes">
+            <attribute name="class" add="o_portal_enhanced" separator=" "/>
+        </xpath>
+    </template>
+
+    <!-- Enhanced Portal Home with Welcome Banner -->
+    <template id="portal_my_home_enhanced" inherit_id="portal.portal_my_home" name="Portal Home Enhanced">
+        <xpath expr="//div[hasclass('o_portal_my_home')]" position="before">
+            <div class="o_portal_welcome_banner mb-4">
+                <div class="container">
+                    <div class="row align-items-center py-4">
+                        <div class="col-auto">
+                            <div class="o_portal_avatar_wrapper">
+                                <img t-att-src="image_data_uri(request.env.user.avatar_256)"
+                                     class="rounded-circle o_portal_avatar"
+                                     width="80" height="80" alt="Avatar"/>
+                                <span class="o_portal_status_dot"> </span>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <h2 class="mb-1 text-white">
+                                Bienvenue, <t t-out="request.env.user.name"/>
+                            </h2>
+                            <p class="mb-0 text-white-50">
+                                <i class="fa fa-envelope me-2"/><t t-out="request.env.user.email"/>
+                            </p>
+                        </div>
+                        <div class="col-auto d-none d-md-block">
+                            <a href="/my/account" class="btn btn-light btn-lg">
+                                <i class="fa fa-cog me-2"/>Paramètres
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </xpath>
+
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="attributes">
+            <attribute name="class" add="o_portal_docs_enhanced" separator=" "/>
+        </xpath>
+    </template>
+
+    <!-- Enhanced Cards Entry - target the first div via t-att-class -->
+    <template id="portal_docs_entry_enhanced" inherit_id="portal.portal_docs_entry" name="Portal Entry Enhanced">
+        <xpath expr="//t[@t-set='force_show']/following-sibling::div[1]" position="attributes">
+            <attribute name="t-att-class">'o_portal_index_card o_portal_card_enhanced ' +  ('' if force_show or config_card else 'd-none ') + ('col-12 order-0' if show_count else 'col-md-6 order-2')</attribute>
+        </xpath>
+    </template>
+
+    <!-- Enhanced Details Page - target o_portal_details -->
+    <template id="portal_my_details_enhanced" inherit_id="portal.portal_my_details" name="Portal Details Enhanced">
+        <xpath expr="//div[hasclass('o_portal_details')]" position="attributes">
+            <attribute name="class" add="o_portal_details_enhanced" separator=" "/>
+        </xpath>
+    </template>
+
+    <!-- Add Quick Stats Section -->
+    <template id="portal_quick_stats" inherit_id="portal.portal_my_home" name="Portal Quick Stats">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="before">
+            <div class="o_portal_quick_stats mb-4">
+                <div class="row g-3">
+                    <div class="col-6 col-md-3">
+                        <div class="o_portal_stat_card text-center p-3 rounded-3">
+                            <i class="fa fa-file-text-o fa-2x mb-2 text-primary"/>
+                            <h4 class="mb-0" t-out="quotation_count if quotation_count else 0"/>
+                            <small class="text-muted">Devis</small>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="o_portal_stat_card text-center p-3 rounded-3">
+                            <i class="fa fa-shopping-cart fa-2x mb-2 text-success"/>
+                            <h4 class="mb-0" t-out="order_count if order_count else 0"/>
+                            <small class="text-muted">Commandes</small>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="o_portal_stat_card text-center p-3 rounded-3">
+                            <i class="fa fa-credit-card fa-2x mb-2 text-info"/>
+                            <h4 class="mb-0" t-out="invoice_count if invoice_count else 0"/>
+                            <small class="text-muted">Factures</small>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="o_portal_stat_card text-center p-3 rounded-3">
+                            <i class="fa fa-ticket fa-2x mb-2 text-warning"/>
+                            <h4 class="mb-0" t-out="ticket_count if ticket_count else 0"/>
+                            <small class="text-muted">Tickets</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </xpath>
+    </template>
+
+    <!-- Enhanced Breadcrumbs -->
+    <template id="portal_breadcrumbs_enhanced" inherit_id="portal.portal_breadcrumbs" name="Breadcrumbs Enhanced">
+        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="attributes">
+            <attribute name="class" add="o_portal_breadcrumbs_enhanced" separator=" "/>
+        </xpath>
+    </template>
+
+
+</odoo>
+
