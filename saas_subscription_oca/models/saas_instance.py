@@ -13,3 +13,8 @@ class SaaSInstance(models.Model):
         copy=False,
         help='Abonnement subscription_oca lié à cette instance.'
     )
+    saas_country_id = fields.Many2one(
+        'res.country',
+        string='Pays localisation',
+        help="Pays dont le module l10n est installé sur cette instance.",
+    )

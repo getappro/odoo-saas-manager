@@ -10,7 +10,7 @@ import jwt
 from odoo import http, fields, SUPERUSER_ID, api
 from odoo.http import request
 from odoo.tools.config import config as odoo_config
-import odoo
+from odoo.modules.registry import Registry
 
 _logger = logging.getLogger(__name__)
 
@@ -217,7 +217,7 @@ class SaaSAgentController(http.Controller):
             if not db_name:
                 return {'success': False, 'error': 'No database found'}
 
-            registry = odoo.registry(db_name)
+            registry = Registry(db_name)
             with registry.cursor() as cr:
                 env = api.Environment(cr, SUPERUSER_ID, {})
                 ICP = env['ir.config_parameter']
@@ -246,7 +246,7 @@ class SaaSAgentController(http.Controller):
             if not db_name:
                 return request.redirect('/web/login?error=no_database')
 
-            registry = odoo.registry(db_name)
+            registry = Registry(db_name)
 
             with registry.cursor() as cr:
                 env = api.Environment(cr, SUPERUSER_ID, {})

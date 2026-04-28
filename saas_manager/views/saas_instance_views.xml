@@ -179,7 +179,7 @@
                             <main>
                                 <field name="name" class="fw-bold fs-5"/>
                                 <div class="text-muted">
-                                    <i class="fa fa-link"/> <field name="domain"/>
+                                    <i class="fa fa-link" title="Domain"/> <field name="domain"/>
                                 </div>
                                 <div class="mt-1">
                                     <span class="badge" t-att-class="
@@ -193,7 +193,7 @@
                                     </span>
                                 </div>
                                 <div class="mt-2">
-                                    <i class="fa fa-cube"/> <field name="template_id"/>
+                                    <i class="fa fa-cube" title="Template"/> <field name="template_id"/>
                                     <!--<span class="ms-2"><i class="fa fa-tag"/> <field name="plan_id"/></span>-->
                                 </div>
                             </main>

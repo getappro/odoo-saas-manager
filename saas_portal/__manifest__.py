@@ -20,6 +20,7 @@
     'depends': [
         'saas_manager',
         'portal',
+        'website_sale',
     ],
     'data': [
         'security/ir.model.access.csv',

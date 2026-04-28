@@ -1,7 +1,58 @@
 # -*- coding: utf-8 -*-
+import logging
 from odoo import http
 from odoo.http import request
 from odoo.addons.portal.controllers.portal import CustomerPortal, pager as portal_pager
+from odoo.addons.website_sale.controllers.main import WebsiteSale
+
+_logger = logging.getLogger(__name__)
+
+
+class SaaSWebsiteSaleCheckout(WebsiteSale):
+    """Override checkout pour capturer le pays de localisation SaaS."""
+
+    @http.route()
+    def extra_info(self, **post):
+        result = super().extra_info(**post)
+        order = request.website.sale_get_order()
+        if not order:
+            return result
+
+        # Tenter de lire le pays depuis les POST params
+        # Le CMS peut nommer le champ 'saas_country_id', 'country_id', 'pays', etc.
+        country = None
+        for key in ('saas_country_id', 'country_id', 'pays_id', 'pays'):
+            val = post.get(key)
+            if val:
+                try:
+                    country_id = int(val)
+                    country = request.env['res.country'].sudo().browse(country_id)
+                    if country.exists():
+                        break
+                except (ValueError, TypeError):
+                    # valeur texte : chercher par code ou nom
+                    country = request.env['res.country'].sudo().search(
+                        ['|', ('code', '=ilike', val), ('name', '=ilike', val)], limit=1
+                    )
+                    if country:
+                        break
+
+        if country:
+            order.sudo().saas_country_id = country
+            _logger.info("SaaS checkout: country %s captured on order %s", country.code, order.name)
+        elif not order.saas_country_id and order.partner_id.country_id:
+            # Fallback sur le pays du client
+            order.sudo().saas_country_id = order.partner_id.country_id
+
+        return result
+
+    @http.route()
+    def checkout(self, **post):
+        result = super().checkout(**post)
+        order = request.website.sale_get_order()
+        if order and not order.saas_country_id and order.partner_id.country_id:
+            order.sudo().saas_country_id = order.partner_id.country_id
+        return result
 
 
 class SaaSPortal(CustomerPortal):
@@ -70,4 +121,5 @@ class SaaSPortal(CustomerPortal):
             'page_name': 'saas_instance_detail',
         }
         return request.render('saas_portal.portal_instance_detail', values)
+
 

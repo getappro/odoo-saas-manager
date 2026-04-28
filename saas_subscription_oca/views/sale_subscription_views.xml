@@ -23,6 +23,7 @@
             </xpath>
             <xpath expr="//field[@name='partner_id']" position="after">
                 <field name="subdomain" placeholder="ex: mon-client"/>
+                <field name="saas_country_id" options="{'no_create': True}"/>
             </xpath>
         </field>
     </record>

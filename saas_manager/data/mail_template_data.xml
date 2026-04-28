@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data noupdate="1">
+    <data noupdate="0">
         <!-- Email Template: Instance Provisioned -->
         <record id="mail_template_instance_provisioned" model="mail.template">
             <field name="name">SaaS: Instance Provisioned</field>
@@ -28,10 +28,7 @@
                     <td style="border-radius:0px;border-style:none;margin:0px;box-sizing:border-box;border-left-color:#808080;border-bottom-color:#808080;border-right-color:#808080;border-top-color:#808080;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;padding: 8px 0; color: #94A3B8;">Instance :</td>
                     <td style="border-radius:0px;border-style:none;margin:0px;box-sizing:border-box;border-left-color:#808080;border-bottom-color:#808080;border-right-color:#808080;border-top-color:#808080;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;padding: 8px 0px; font-weight: bold; color: #f8fafc;"><t t-out="object.name or ''"></t></td>
                 </tr>
-                <tr style="border-radius:0px;border-style:none;padding:0px;margin:0px;box-sizing:border-box;border-left-color:#808080;border-bottom-color:#808080;border-right-color:#808080;border-top-color:#808080;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;">
-                    <td style="border-radius:0px;border-style:none;margin:0px;box-sizing:border-box;border-left-color:#808080;border-bottom-color:#808080;border-right-color:#808080;border-top-color:#808080;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;padding: 8px 0; color: #94A3B8;">Plan :</td>
-                    <td style="border-radius:0px;border-style:none;margin:0px;box-sizing:border-box;border-left-color:#808080;border-bottom-color:#808080;border-right-color:#808080;border-top-color:#808080;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;padding: 8px 0px; color: #f8fafc;"><span style="background: #8B5CF6; padding: 2px 8px; border-radius: 4px; font-size: 12px;"><t t-out="object.plan_id.name or ''"></t></span></td>
-                </tr>
+
                 <tr style="border-radius:0px;border-style:none;padding:0px;margin:0px;box-sizing:border-box;border-left-color:#808080;border-bottom-color:#808080;border-right-color:#808080;border-top-color:#808080;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;">
                     <td style="border-radius:0px;border-style:none;margin:0px;box-sizing:border-box;border-left-color:#808080;border-bottom-color:#808080;border-right-color:#808080;border-top-color:#808080;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;padding: 8px 0; color: #94A3B8;">Utilisateur :</td>
                     <td style="border-radius:0px;border-style:none;margin:0px;box-sizing:border-box;border-left-color:#808080;border-bottom-color:#808080;border-right-color:#808080;border-top-color:#808080;border-left-width:0px;border-bottom-width:0px;border-right-width:0px;border-top-width:0px;padding: 8px 0; font-family: monospace; color: #06B6D4;"><t t-out="object.admin_login or ''"></t></td>

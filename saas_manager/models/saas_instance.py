@@ -382,6 +382,9 @@ class SaaSInstance(models.Model):
             self._ensure_agent_secret()
             self._push_agent_secret_to_instance()
 
+            # Step 4ter: Install l10n module based on country (best effort)
+            self._install_l10n_module()
+
             # Step 5: Configure subdomain (~1s)
             self._configure_subdomain()
             
@@ -395,7 +398,8 @@ class SaaSInstance(models.Model):
 
             # Step 7: Sync user limit to instance
             if self.user_limit:
-                self._send_user_limit_to_instance()
+                if self._send_user_limit_to_instance():
+                    self.write({'last_sync_date': fields.Datetime.now()})
 
             # Step 8: Send provisioning email to customer
             self._send_provisioning_email()
@@ -516,39 +520,165 @@ class SaaSInstance(models.Model):
         # Placeholder - actual implementation in Phase 2
 
     def _customize_instance(self):
+        _logger.info(f"Customizing instance {self.database_name}")
+        # Phase 2: customize company name, logo, etc. via RPC
+
+    def _install_l10n_module(self):
+        """Installe le module l10n correspondant au pays saas_country_id via RPC.
+
+        Mapping country.code → l10n module name. Non-bloquant : les erreurs
+        sont loggées mais ne font pas échouer le provisioning.
         """
-        Personnaliser l'instance avec les données client.
-        Customize instance with client data.
-        
-        TODO Phase 2: Implement with odoorpc
-        
-        Example implementation:
-            import odoorpc
-            
-            odoo = odoorpc.ODOO(host, port, protocol='jsonrpc+ssl')
-            odoo.login(self.database_name, 'admin', 'admin')
-            
-            Company = odoo.env['res.company']
-            
-            # Update main company
-            company = Company.browse(1)
-            Company.write([company], {
-                'name': self.partner_id.name,
-                'email': self.partner_id.email,
-                'phone': self.partner_id.phone,
-                'website': self.domain,
-            })
-            
-            # Upload logo if available
-            if self.partner_id.image_1920:
-                Company.write([company], {
-                    'logo': self.partner_id.image_1920,
-                })
-            
-            _logger.info(f"Instance {self.database_name} customized")
-        """
-        _logger.info(f"TODO Phase 2: Customize instance {self.database_name}")
-        # Placeholder - actual implementation in Phase 2
+        self.ensure_one()
+
+        L10N_MAP = {
+            'MA': 'l10n_ma',
+            'SN': 'l10n_sn',
+            'FR': 'l10n_fr',
+            'BE': 'l10n_be',
+            'DZ': 'l10n_dz',
+            'TN': 'l10n_tn',
+            'CI': 'l10n_ci',
+            'CM': 'l10n_cm',
+            'DE': 'l10n_de',
+            'ES': 'l10n_es',
+            'GB': 'l10n_uk',
+            'US': 'l10n_us',
+            'SA': 'l10n_sa',
+            'AE': 'l10n_ae',
+        }
+
+        country = getattr(self, 'saas_country_id', None)
+        if not country:
+            _logger.info("No saas_country_id on instance %s, skipping l10n install", self.name)
+            return
+
+        country_code = country.code
+        l10n_module = L10N_MAP.get(country_code)
+        if not l10n_module:
+            _logger.info("No l10n module mapped for country %s on instance %s", country_code, self.name)
+            return
+
+        if not self.admin_login or not self.admin_password:
+            _logger.warning("No admin credentials to install l10n for %s", self.name)
+            return
+
+        server = self.server_id
+        base_url = server.server_url.rstrip('/')
+        rpc_url = f"{base_url}/jsonrpc"
+
+        try:
+            # 1. Authenticate
+            auth_resp = requests.post(rpc_url, json={
+                'jsonrpc': '2.0', 'method': 'call', 'id': 1,
+                'params': {
+                    'service': 'common', 'method': 'authenticate',
+                    'args': [self.database_name, self.admin_login, self.admin_password, {}],
+                },
+            }, timeout=30, verify=False)
+            uid = auth_resp.json().get('result')
+            if not uid:
+                _logger.warning("Auth failed for l10n install on %s", self.name)
+                return
+
+            # 2. Search module
+            search_resp = requests.post(rpc_url, json={
+                'jsonrpc': '2.0', 'method': 'call', 'id': 2,
+                'params': {
+                    'service': 'object', 'method': 'execute_kw',
+                    'args': [
+                        self.database_name, uid, self.admin_password,
+                        'ir.module.module', 'search',
+                        [[['name', '=', l10n_module]]],
+                    ],
+                },
+            }, timeout=30, verify=False)
+            module_ids = search_resp.json().get('result', [])
+            if not module_ids:
+                _logger.warning("Module %s not found in instance %s", l10n_module, self.name)
+                return
+
+            # 3. Check state (skip if already installed)
+            read_resp = requests.post(rpc_url, json={
+                'jsonrpc': '2.0', 'method': 'call', 'id': 3,
+                'params': {
+                    'service': 'object', 'method': 'execute_kw',
+                    'args': [
+                        self.database_name, uid, self.admin_password,
+                        'ir.module.module', 'read',
+                        [module_ids, ['state']],
+                    ],
+                },
+            }, timeout=30, verify=False)
+            module_info = read_resp.json().get('result', [])
+            if module_info and module_info[0].get('state') == 'installed':
+                _logger.info("Module %s already installed on %s", l10n_module, self.name)
+                return
+
+            # 4. Install (button_immediate_install triggers registry reload on that instance)
+            try:
+                install_resp = requests.post(rpc_url, json={
+                    'jsonrpc': '2.0', 'method': 'call', 'id': 4,
+                    'params': {
+                        'service': 'object', 'method': 'execute_kw',
+                        'args': [
+                            self.database_name, uid, self.admin_password,
+                            'ir.module.module', 'button_immediate_install',
+                            [module_ids],
+                        ],
+                    },
+                }, timeout=120, verify=False)
+                result = install_resp.json()
+                if result.get('error'):
+                    _logger.warning(
+                        "L10n install RPC error for %s: %s",
+                        self.name, result['error'].get('data', {}).get('message', result['error'])
+                    )
+                else:
+                    _logger.info("L10n module %s install triggered on %s", l10n_module, self.name)
+            except requests.exceptions.Timeout:
+                # button_immediate_install peut provoquer un restart du worker — normal
+                _logger.info(
+                    "L10n install timed out for %s (expected if worker restarts): module=%s",
+                    self.name, l10n_module
+                )
+
+            # 5. Apply chart template via direct registry access (SUPERUSER — contourne les ACL)
+            import time as _time
+            from odoo import api as _odoo_api, SUPERUSER_ID
+            from odoo.modules.registry import Registry as _Registry
+            _time.sleep(4)  # Attendre le rechargement du registry post-install
+            try:
+                _registry = _Registry(self.database_name)
+                with _registry.cursor() as _cr:
+                    _env = _odoo_api.Environment(_cr, SUPERUSER_ID, {})
+                    _company = _env['res.company'].browse(1)
+                    _templates = _env['account.chart.template'].search(
+                        [('country_id.code', '=', country_code)], limit=1
+                    )
+                    if not _templates:
+                        _logger.warning(
+                            "No chart template for country %s on %s", country_code, self.name
+                        )
+                    else:
+                        _templates.try_loading(company=_company, install_demo=False)
+                        _logger.info(
+                            "Chart template %s applied to main company on %s",
+                            country_code, self.name
+                        )
+            except Exception as _ct_exc:
+                _logger.warning(
+                    "Failed to apply chart template for country %s on %s: %s",
+                    country_code, self.name, _ct_exc
+                )
+
+        except requests.exceptions.Timeout:
+            _logger.info(
+                "L10n install timed out for %s (expected if worker restarts): module=%s",
+                self.name, l10n_module
+            )
+        except Exception as exc:
+            _logger.warning("Failed to install l10n module %s on %s: %s", l10n_module, self.name, exc)
 
     def _create_client_admin(self):
         """

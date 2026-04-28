@@ -61,6 +61,14 @@ class SaaSServer(models.Model):
         tracking=True,
         help="Base URL of the server (e.g., 'https://saas1.example.com')"
     )
+    instance_protocol = fields.Selection([
+        ('http', 'HTTP'),
+        ('https', 'HTTPS'),
+    ], string='Instance Protocol', default='https', required=True,
+        tracking=True,
+        help="Protocole utilisé pour les URLs des instances hébergées sur ce serveur. "
+             "Utiliser HTTP pour les environnements locaux/de développement."
+    )
     server_ip = fields.Char(
         string='Server IP Address',
         help="Server IP address for direct connection"
@@ -194,6 +202,12 @@ class SaaSServer(models.Model):
         ('code_unique', 'UNIQUE(code)', 'Server code must be unique!'),
         ('server_url_unique', 'UNIQUE(server_url)', 'Server URL must be unique!'),
     ]
+
+    @api.onchange('server_url')
+    def _onchange_server_url_protocol(self):
+        """Auto-détecter le protocole depuis l'URL du serveur."""
+        if self.server_url and not self.instance_protocol:
+            self.instance_protocol = 'http' if self.server_url.startswith('http://') else 'https'
 
     @api.constrains('code')
     def _check_code(self):

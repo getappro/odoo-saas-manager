@@ -21,7 +21,8 @@ class ResConfigSettings(models.TransientModel):
         )
         group = []
         for name, groups, implied_group in classified["group"]:
-            if (implied_group and user.has_group(implied_group)) or allow_implied:
+            # implied_group is a res.groups recordset in Odoo 18 (not a string XML ID)
+            if allow_implied or (implied_group and implied_group in user.groups_id):
                 group.append((name, groups, implied_group))
         classified["group"] = group
         return classified

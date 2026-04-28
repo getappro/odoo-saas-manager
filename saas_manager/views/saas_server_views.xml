@@ -133,8 +133,9 @@
                             <!-- Server Configuration Tab -->
                             <page string="Server Configuration" name="server_config">
                                 <group>
-                                    <group string="Connection">
+                                     <group string="Connection">
                                         <field name="server_url" widget="url"/>
+                                        <field name="instance_protocol"/>
                                         <field name="server_ip"/>
                                         <field name="server_port"/>
                                     </group>

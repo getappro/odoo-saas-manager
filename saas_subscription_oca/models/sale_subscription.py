@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime, time
+from dateutil.relativedelta import relativedelta
 from odoo import api, fields, models, _
 from odoo.exceptions import ValidationError, UserError
 
@@ -17,6 +18,22 @@ class SaleSubscription(models.Model):
         string='Sous-domaine',
         help='Sous-domaine et nom de base de données pour l\'instance SaaS.'
     )
+    saas_country_id = fields.Many2one(
+        'res.country',
+        string='Pays localisation SaaS',
+        help="Pays dont le module l10n sera installé sur l'instance au provisioning.",
+    )
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        ctx_subdomain = self.env.context.get('saas_subdomain')
+        ctx_country_id = self.env.context.get('saas_country_id')
+        for vals in vals_list:
+            if ctx_subdomain and not vals.get('subdomain'):
+                vals['subdomain'] = ctx_subdomain
+            if ctx_country_id and not vals.get('saas_country_id'):
+                vals['saas_country_id'] = ctx_country_id
+        return super().create(vals_list)
 
     @api.constrains('subdomain')
     def _check_subdomain_unique(self):
@@ -40,6 +57,23 @@ class SaleSubscription(models.Model):
         if not self.subdomain:
             raise UserError(_('Veuillez définir un sous-domaine avant de créer l\'instance.'))
 
+        # Pays : celui de la souscription ou fallback sur le pays du client
+        country = self.saas_country_id or self.partner_id.country_id
+
+        # Protocole : hérité du serveur par défaut (http vs https)
+        default_server = self.env['saas.instance']._get_default_server()
+        protocol = getattr(default_server, 'instance_protocol', None) or 'https'
+
+        # Date d'expiration : recurring_next_date ou fallback +1 mois
+        if self.recurring_next_date:
+            expiration_date = datetime.combine(self.recurring_next_date, time.min)
+        elif self.date_start:
+            expiration_date = datetime.combine(
+                self.date_start + relativedelta(months=1), time.min
+            )
+        else:
+            expiration_date = False
+
         instance = self.env['saas.instance'].create({
             'name': f"{self.partner_id.name} - {self.code}",
             'partner_id': self.partner_id.id,
@@ -48,15 +82,14 @@ class SaleSubscription(models.Model):
             'database_name': self.subdomain.replace('-', '_'),
             'sale_subscription_id': self.id,
             'user_limit': int(user_limit),
+            'saas_country_id': country.id if country else False,
+            'protocol': protocol,
             'activation_date': datetime.combine(self.date_start, time.min) if self.date_start else False,
-            'expiration_date': datetime.combine(self.recurring_next_date, time.min) if self.recurring_next_date else False,
+            'expiration_date': expiration_date,
         })
 
         self.saas_instance_id = instance.id
-
-        # Provisionner l'instance
         instance.action_provision_instance()
-
 
         return {
             'type': 'ir.actions.act_window',
@@ -83,10 +116,11 @@ class SaleSubscription(models.Model):
             'target': 'current',
         }
 
-
     def write(self, vals):
         if vals.get('stage_id'):
-            target_stage = self.env['sale.subscription.stage'].browse(vals['stage_id'])
+            stage_raw = vals['stage_id']
+            stage_id = stage_raw.id if hasattr(stage_raw, 'id') else int(stage_raw)
+            target_stage = self.env['sale.subscription.stage'].browse(stage_id)
             if target_stage.type == 'in_progress':
                 terminated = self.filtered(lambda sub: sub.saas_instance_id and sub.saas_instance_id.state == 'terminated')
                 if terminated:
