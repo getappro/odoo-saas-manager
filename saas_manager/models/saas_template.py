@@ -386,6 +386,39 @@ class SaaSTemplate(models.Model):
             netloc = template_hostname
         return urlunparse((parsed_base.scheme, netloc, '', '', '', '')).rstrip('/')
 
+    def _push_agent_secret_via_bootstrap(self, base_url, secret):
+        """Fallback: use /saas/bootstrap endpoint (master password) to push agent secret."""
+        master_password = config.get('admin_passwd') or ''
+        if not master_password:
+            _logger.warning("No master password configured, cannot use bootstrap fallback")
+            return False
+        bootstrap_url = f"{base_url}/saas/bootstrap"
+        try:
+            payload = {
+                'jsonrpc': '2.0',
+                'method': 'call',
+                'id': 1,
+                'params': {
+                    'master_password': master_password,
+                    'agent_secret': secret,
+                    'instance_uuid': self.template_db,
+                },
+            }
+            resp = requests.post(bootstrap_url, json=payload, timeout=30, verify=False)
+            resp.raise_for_status()
+            result = resp.json().get('result') or {}
+            if result.get('success'):
+                _logger.info("Agent secret bootstrapped via master password for template %s", self.name)
+                return True
+            _logger.warning(
+                "Bootstrap failed for template %s: %s",
+                self.name, result.get('error', 'unknown error'),
+            )
+            return False
+        except Exception as exc:
+            _logger.warning("Bootstrap request failed for template %s: %s", self.name, exc)
+            return False
+
     def _push_agent_secret_to_template(self):
         self.ensure_one()
         base_url = self._build_template_url()
@@ -409,8 +442,11 @@ class SaaSTemplate(models.Model):
             login_resp.raise_for_status()
             uid = login_resp.json().get('result')
             if not uid:
-                _logger.warning("RPC login failed on template %s when pushing agent secret", self.name)
-                return False
+                _logger.warning(
+                    "RPC login failed on template %s (login=%s) — trying bootstrap fallback",
+                    self.name, self.template_admin_login or 'admin',
+                )
+                return self._push_agent_secret_via_bootstrap(base_url, secret)
 
             params_payload = {
                 'jsonrpc': '2.0',
@@ -440,7 +476,33 @@ class SaaSTemplate(models.Model):
             return True
         except Exception as exc:
             _logger.warning("Failed to push agent secret to template %s: %s", self.name, exc)
-            return False
+            # Last resort: try bootstrap
+            return self._push_agent_secret_via_bootstrap(base_url, secret)
+
+    def action_bootstrap_agent_secret(self):
+        """Sync agent secret via master password (useful after DB restore)."""
+        self.ensure_one()
+        base_url = self._build_template_url()
+        if not base_url:
+            raise UserError(_('Template has no base URL configured.'))
+        secret = self._ensure_agent_secret()
+        if self._push_agent_secret_via_bootstrap(base_url, secret):
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                    'title': _('Success'),
+                    'message': _('Agent secret synced successfully via master password.'),
+                    'type': 'success',
+                    'sticky': False,
+                },
+            }
+        raise UserError(_(
+            'Bootstrap failed. Vérifiez que :\n'
+            '1. Le module saas_agent est installé dans la base template\n'
+            '2. Le master password (admin_passwd) est configuré dans odoo.conf\n'
+            '3. L\'URL %s est accessible'
+        ) % base_url)
 
     def _build_agent_jwt(self, action, extra=None, ttl=300):
         self.ensure_one()

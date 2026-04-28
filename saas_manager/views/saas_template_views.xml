@@ -22,6 +22,11 @@
                                 type="object" 
                                 string="Access Template"
                                 invisible="not is_template_ready"/>
+                        <button name="action_bootstrap_agent_secret"
+                                type="object"
+                                string="Bootstrap Agent Secret"
+                                invisible="not is_template_ready"
+                                help="Sync agent secret via master password (utile après restauration DB)"/>
                         <button name="action_sso_login_template"
                                 type="object"
                                 string="SSO Template"
