@@ -1,4 +1,4 @@
-# License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
+# -*- coding: utf-8 -*-
 from odoo import fields, models
 
 
@@ -9,5 +9,8 @@ class ProductTemplate(models.Model):
         comodel_name="saas.template",
         string="SaaS Template",
         help="Template SaaS à utiliser pour créer les instances.",
+    )
+    saas_active = fields.Boolean(
+        "Available for SaaS Instances", default=True, required=True
     )
 

@@ -5,8 +5,14 @@
         <field name="model">product.template</field>
         <field name="inherit_id" ref="product.product_template_form_view"/>
         <field name="arch" type="xml">
-            <xpath expr="//group/field[@name='subscribable']" position="after">
-                <group string="SaaS" invisible="not subscribable">
+            <div name="options" position='inside'>
+                <span class="d-inline-flex" invisible="type == 'combo'">
+                    <field name="saas_active" />
+                    <label for="saas_active" string="SaaS" />
+                </span>
+            </div>
+            <xpath expr="//group[@name='extra_info']" position="after">
+                <group string="SaaS" name="saas" invisible="not saas_active">
                     <field name="saas_template_id"/>
                 </group>
             </xpath>

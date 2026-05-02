@@ -9,7 +9,6 @@
     'data': [
         'views/saas_instance_views.xml',
         'views/saas_menu.xml',
-        'views/product_product_views.xml',
         'views/product_template_views.xml',
         'views/sale_subscription_views.xml',
         'views/sale_order_views.xml',

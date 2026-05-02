@@ -289,19 +289,27 @@ class SaaSInstance(models.Model):
 
     @api.model
     def _generate_random_password(self, length=16):
+        """Génère un mot de passe garantissant la politique de complexité Odoo.
+
+        Garantit au minimum : 1 majuscule, 1 minuscule, 1 chiffre, 1 caractère spécial.
         """
-        Génère un mot de passe aléatoire sécurisé.
-        Generate a secure random password.
-        
-        Args:
-            length (int): Password length
-            
-        Returns:
-            str: Random password
-        """
-        alphabet = string.ascii_letters + string.digits + "!@#$%^&*"
-        password = ''.join(secrets.choice(alphabet) for _ in range(length))
-        return password
+        upper = string.ascii_uppercase
+        lower = string.ascii_lowercase
+        digits = string.digits
+        special = "!@#$%^&*"
+        all_chars = upper + lower + digits + special
+
+        # Garantir au moins un caractère de chaque catégorie
+        mandatory = [
+            secrets.choice(upper),
+            secrets.choice(lower),
+            secrets.choice(digits),
+            secrets.choice(special),
+        ]
+        rest = [secrets.choice(all_chars) for _ in range(max(length - 4, 4))]
+        pool = mandatory + rest
+        secrets.SystemRandom().shuffle(pool)
+        return ''.join(pool)
 
     @api.constrains('subdomain')
     def _check_subdomain(self):
@@ -400,6 +408,10 @@ class SaaSInstance(models.Model):
             if self.user_limit:
                 if self._send_user_limit_to_instance():
                     self.write({'last_sync_date': fields.Datetime.now()})
+
+            # Step 7bis: Sync expiration date to instance
+            if self.expiration_date:
+                self._send_expiration_to_instance(False, self.expiration_date)
 
             # Step 8: Send provisioning email to customer
             self._send_provisioning_email()
@@ -680,108 +692,97 @@ class SaaSInstance(models.Model):
         except Exception as exc:
             _logger.warning("Failed to install l10n module %s on %s: %s", l10n_module, self.name, exc)
 
+    def _is_local_server(self):
+        """Retourne True si le serveur de l'instance est le même que le serveur courant."""
+        from urllib.parse import urlparse
+        current_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url', '')
+        server_url = self.server_id.server_url or ''
+        return (
+            urlparse(server_url.rstrip('/')).netloc
+            == urlparse(current_url.rstrip('/')).netloc
+        )
+
+    def _update_admin_via_registry(self, admin_login, admin_password):
+        """Mise à jour directe via Registry (serveur local uniquement)."""
+        from odoo import api as _api, SUPERUSER_ID
+        from odoo.modules.registry import Registry as _Registry
+        registry = _Registry(self.database_name)
+        with registry.cursor() as cr:
+            env = _api.Environment(cr, SUPERUSER_ID, {})
+            env['res.users'].browse(2).write({
+                'name': self.partner_id.name,
+                'login': admin_login,
+                'password': admin_password,
+                'email': self.partner_id.email or admin_login,
+            })
+        _logger.info("Admin updated via local registry for %s", self.database_name)
+
+    def _update_admin_via_psql(self, admin_login, admin_password):
+        """Mise à jour via psycopg2 direct (serveur distant).
+
+        Utilise passlib pour hasher le mot de passe identiquement à Odoo.
+        """
+        import psycopg2
+        from passlib.context import CryptContext
+
+        server = self.server_id
+        crypt_ctx = CryptContext(schemes=['pbkdf2_sha512'], deprecated='auto')
+        hashed_password = crypt_ctx.hash(admin_password)
+        partner_name = self.partner_id.name
+        partner_email = self.partner_id.email or admin_login
+
+        conn = psycopg2.connect(
+            host=server.db_host or 'localhost',
+            port=server.db_port or 5432,
+            user=server.db_user or 'odoo',
+            password=server.db_password or '',
+            dbname=self.database_name,
+            connect_timeout=10,
+        )
+        try:
+            with conn.cursor() as cr:
+                cr.execute(
+                    "UPDATE res_users SET login=%s, password=%s WHERE id=2",
+                    (admin_login, hashed_password),
+                )
+                cr.execute(
+                    """UPDATE res_partner SET name=%s, email=%s
+                       WHERE id=(SELECT partner_id FROM res_users WHERE id=2)""",
+                    (partner_name, partner_email),
+                )
+            conn.commit()
+            _logger.info("Admin updated via psycopg2 for %s", self.database_name)
+        finally:
+            conn.close()
+
     def _create_client_admin(self):
         """
         Créer le compte administrateur client.
-        Create client administrator account via RPC.
 
-        Modifie l'utilisateur admin (ID 2) de la base clonée avec les identifiants fournis.
-        Utilise les identifiants du template pour s'authentifier à la base clonée.
-
-        Modifies the admin user (ID 2) of the cloned database with provided credentials.
-        Uses template admin credentials to authenticate to the cloned database.
+        - Serveur local  → Registry + SUPERUSER_ID (indépendant des credentials)
+        - Serveur distant → psycopg2 direct sur PostgreSQL distant
         """
         self.ensure_one()
 
+        admin_login = self.admin_login or self.partner_id.email or f"admin@{self.subdomain}"
+        admin_password = self.admin_password or self._generate_random_password()
+
+        _logger.info("Creating admin account for instance %s", self.database_name)
+        _logger.info("New admin login will be: %s", admin_login)
+
         try:
-            # Get template credentials
-            template = self.template_id
-            template_admin_login = template.template_admin_login
-            template_admin_password = template.template_admin_password
-
-            # Generate credentials if not provided
-            admin_login = self.admin_login or self.partner_id.email or f"admin@{self.subdomain}"
-            admin_password = self.admin_password or self._generate_random_password()
-            
-            # Get server details
-            server = self.server_id
-            base_url = server.server_url.rstrip('/')
-            rpc_url = f"{base_url}/jsonrpc"
-
-            _logger.info(f"Creating admin account for instance {self.database_name}")
-            _logger.info(f"Using template credentials: {template_admin_login}")
-            _logger.info(f"New admin login will be: {admin_login}")
-
-            # Use template credentials to update the admin user
-            # We'll call execute_kw to update res.users with ID 2
-            payload = {
-                'jsonrpc': '2.0',
-                'method': 'call',
-                'params': {
-                    'service': 'object',
-                    'method': 'execute_kw',
-                    'args': [
-                        self.database_name,              # database name
-                        2,                                # admin user ID
-                        template_admin_password,         # current admin password from template
-                        'res.users',                     # model
-                        'write',                         # method
-                        [[2], {                          # write args: [IDs], {values}
-                            'name': self.partner_id.name,
-                            'login': admin_login,
-                            'password': admin_password,
-                            'email': self.partner_id.email or admin_login,
-                        }]
-                    ]
-                },
-                'id': 1
-            }
-
-            _logger.info(f"Updating admin user via RPC: {rpc_url}")
-
-            response = requests.post(
-                rpc_url,
-                json=payload,
-                timeout=30,
-                verify=False
+            if self._is_local_server():
+                self._update_admin_via_registry(admin_login, admin_password)
+            else:
+                self._update_admin_via_psql(admin_login, admin_password)
+        except Exception as e:
+            _logger.error(
+                "Failed to update admin user for %s: %s",
+                self.database_name, e,
             )
 
-            response.raise_for_status()
-            result = response.json()
-
-            # Check for RPC errors
-            if 'error' in result and result['error']:
-                error_data = result['error'].get('data', {})
-                error_msg = error_data.get('message', str(result['error']))
-                _logger.error(f"Failed to update admin user: {error_msg}")
-                # Don't raise error, just log warning and continue
-                _logger.warning(f"Admin user configuration may not be complete: {error_msg}")
-            else:
-                _logger.info(f"Admin user updated successfully for {self.database_name}")
-
-            # Store the credentials
-            self.write({
-                'admin_login': admin_login,
-                'admin_password': admin_password,
-            })
-            
-            _logger.info(f"Admin credentials stored for instance {self.database_name}")
-
-        except requests.exceptions.RequestException as e:
-            _logger.error(f"Request error while creating admin: {str(e)}")
-            # Generate and store credentials anyway for manual setup if needed
-            if not self.admin_login:
-                self.admin_login = self.partner_id.email or f"admin@{self.subdomain}"
-            if not self.admin_password:
-                self.admin_password = self._generate_random_password()
-            _logger.warning(f"Admin credentials stored but may need manual configuration")
-        except Exception as e:
-            _logger.exception(f"Error creating admin account: {str(e)}")
-            # Generate and store credentials anyway
-            if not self.admin_login:
-                self.admin_login = self.partner_id.email or f"admin@{self.subdomain}"
-            if not self.admin_password:
-                self.admin_password = self._generate_random_password()
+        self.write({'admin_login': admin_login, 'admin_password': admin_password})
+        _logger.info("Admin credentials stored for instance %s", self.database_name)
 
     def _configure_subdomain(self):
         """
