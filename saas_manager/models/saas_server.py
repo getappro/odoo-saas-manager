@@ -112,6 +112,12 @@ class SaaSServer(models.Model):
         default='admin',
         help="Odoo master password for database operations"
     )
+    verify_ssl = fields.Boolean(
+        string='Vérifier SSL',
+        default=True,
+        help="Vérifier le certificat SSL lors des appels HTTP vers ce serveur. "
+             "Désactiver uniquement pour les certificats auto-signés ou les environnements de test."
+    )
 
     # Server Resources
     cpu_cores = fields.Integer(
@@ -299,7 +305,7 @@ class SaaSServer(models.Model):
             response = requests.get(
                 test_url,
                 timeout=10,
-                verify=False,
+                verify=self.verify_ssl,
                 allow_redirects=True
             )
 

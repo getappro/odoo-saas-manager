@@ -157,6 +157,7 @@
                                     </group>
                                     <group string="Odoo Authentication">
                                         <field name="master_password" password="True"/>
+                                        <field name="verify_ssl"/>
                                     </group>
                                 </group>
                             </page>

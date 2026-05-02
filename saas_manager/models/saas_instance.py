@@ -587,7 +587,7 @@ class SaaSInstance(models.Model):
                     'service': 'common', 'method': 'authenticate',
                     'args': [self.database_name, self.admin_login, self.admin_password, {}],
                 },
-            }, timeout=30, verify=False)
+            }, timeout=30, verify=self._ssl_verify)
             uid = auth_resp.json().get('result')
             if not uid:
                 _logger.warning("Auth failed for l10n install on %s", self.name)
@@ -604,7 +604,7 @@ class SaaSInstance(models.Model):
                         [[['name', '=', l10n_module]]],
                     ],
                 },
-            }, timeout=30, verify=False)
+            }, timeout=30, verify=self._ssl_verify)
             module_ids = search_resp.json().get('result', [])
             if not module_ids:
                 _logger.warning("Module %s not found in instance %s", l10n_module, self.name)
@@ -621,7 +621,7 @@ class SaaSInstance(models.Model):
                         [module_ids, ['state']],
                     ],
                 },
-            }, timeout=30, verify=False)
+            }, timeout=30, verify=self._ssl_verify)
             module_info = read_resp.json().get('result', [])
             if module_info and module_info[0].get('state') == 'installed':
                 _logger.info("Module %s already installed on %s", l10n_module, self.name)
@@ -639,7 +639,7 @@ class SaaSInstance(models.Model):
                             [module_ids],
                         ],
                     },
-                }, timeout=120, verify=False)
+                }, timeout=120, verify=self._ssl_verify)
                 result = install_resp.json()
                 if result.get('error'):
                     _logger.warning(
@@ -1436,7 +1436,7 @@ class SaaSInstance(models.Model):
                 json={'jsonrpc': '2.0', 'params': bootstrap_payload},
                 headers={'Content-Type': 'application/json'},
                 timeout=30,
-                verify=False,
+                verify=self._ssl_verify,
             )
             response.raise_for_status()
             payload = self._parse_agent_response(response)
@@ -1457,6 +1457,10 @@ class SaaSInstance(models.Model):
         except Exception as exc:
             _logger.warning("Failed to push agent secret to %s: %s", self.name, exc)
             return False
+
+    @property
+    def _ssl_verify(self):
+        return self.server_id.verify_ssl if self.server_id else True
 
     def _build_agent_jwt(self, action, extra=None, ttl=300):
         self.ensure_one()
@@ -1479,7 +1483,7 @@ class SaaSInstance(models.Model):
             raise UserError(_('Instance has no domain configured.'))
         url = f"{base_url}{endpoint}"
         headers = {'Authorization': f'Bearer {token}'}
-        return requests.post(url, json={'token': token}, headers=headers, timeout=timeout, verify=False)
+        return requests.post(url, json={'token': token}, headers=headers, timeout=timeout, verify=self._ssl_verify)
 
     def action_sso_login(self):
         """SSO login via JWT token — no admin credentials needed."""

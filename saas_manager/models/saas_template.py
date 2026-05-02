@@ -367,6 +367,10 @@ class SaaSTemplate(models.Model):
             self.agent_secret = secrets.token_urlsafe(32)
         return self.agent_secret
 
+    @property
+    def _ssl_verify(self):
+        return self.server_id.verify_ssl if self.server_id else True
+
     def _build_template_url(self):
         self.ensure_one()
         base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url') or ''
@@ -404,7 +408,7 @@ class SaaSTemplate(models.Model):
                     'instance_uuid': self.template_db,
                 },
             }
-            resp = requests.post(bootstrap_url, json=payload, timeout=30, verify=False)
+            resp = requests.post(bootstrap_url, json=payload, timeout=30, verify=self._ssl_verify)
             resp.raise_for_status()
             result = resp.json().get('result') or {}
             if result.get('success'):
@@ -438,7 +442,7 @@ class SaaSTemplate(models.Model):
                 },
                 'id': 1,
             }
-            login_resp = requests.post(rpc_url, json=login_payload, timeout=30, verify=False)
+            login_resp = requests.post(rpc_url, json=login_payload, timeout=30, verify=self._ssl_verify)
             login_resp.raise_for_status()
             uid = login_resp.json().get('result')
             if not uid:
@@ -465,12 +469,12 @@ class SaaSTemplate(models.Model):
                 },
                 'id': 2,
             }
-            requests.post(rpc_url, json=params_payload, timeout=30, verify=False).raise_for_status()
+            requests.post(rpc_url, json=params_payload, timeout=30, verify=self._ssl_verify).raise_for_status()
 
             uuid_payload = params_payload.copy()
             uuid_payload['params']['args'][-1] = ['saas_agent.instance_uuid', self.template_db]
             uuid_payload['id'] = 3
-            requests.post(rpc_url, json=uuid_payload, timeout=30, verify=False).raise_for_status()
+            requests.post(rpc_url, json=uuid_payload, timeout=30, verify=self._ssl_verify).raise_for_status()
 
             _logger.info("Agent secret synced to template %s", self.name)
             return True
@@ -525,7 +529,7 @@ class SaaSTemplate(models.Model):
             raise UserError(_('Template has no base URL configured.'))
         url = f"{base_url}{endpoint}"
         headers = {'Authorization': f'Bearer {token}'}
-        return requests.post(url, json={'token': token}, headers=headers, timeout=timeout, verify=False)
+        return requests.post(url, json={'token': token}, headers=headers, timeout=timeout, verify=self._ssl_verify)
 
     def _parse_agent_response(self, response):
         data = response.json()
@@ -981,7 +985,7 @@ class SaaSTemplate(models.Model):
                 rpc_url,
                 json=payload,
                 timeout=30,
-                verify=False
+                verify=self._ssl_verify
             )
 
             response.raise_for_status()
